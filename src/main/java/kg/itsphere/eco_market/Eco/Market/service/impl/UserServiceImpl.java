@@ -1,4 +1,50 @@
 package kg.itsphere.eco_market.Eco.Market.service.impl;
 
-public class UserServiceImpl {
+import kg.itsphere.eco_market.Eco.Market.domain.entity.enums.Role;
+import kg.itsphere.eco_market.Eco.Market.domain.entity.user.User;
+import kg.itsphere.eco_market.Eco.Market.repository.UserRepository;
+import kg.itsphere.eco_market.Eco.Market.service.UserService;
+import kg.itsphere.eco_market.Eco.Market.web.dto.user.UserResponse;
+import kg.itsphere.eco_market.Eco.Market.web.mapper.UserMapper;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+@Service
+@AllArgsConstructor
+public class UserServiceImpl implements UserService {
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+    @Override
+    public List<UserResponse> getAll() {
+        return userMapper.toDtoS(userRepository.findAll());
+    }
+
+    @Override
+    public UserResponse findByEmail(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+        checker(user, email);
+        return userMapper.toDto(user.get());
+    }
+
+    @Override
+    public void controlUserRole(String userEmail, Map<String, Object> fields) {
+        Optional<User> user = userRepository.findByEmail(userEmail);
+        checker(user, userEmail);
+        fields.forEach((key, value) -> {
+            if(key.equals("role")) {
+                user.get().setRole((Role) value);
+            }
+        });
+        userRepository.save(user.get());
+    }
+
+    private void checker(Optional<User> user, String email) {
+        if(user.isEmpty()) {
+            // todo here will be exception
+        }
+    }
 }

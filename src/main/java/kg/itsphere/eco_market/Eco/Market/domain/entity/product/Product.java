@@ -12,7 +12,7 @@ public class Product {
     private String name;
     private Category category;
     private Integer price;
-    @OneToOne
-    private Image image;
+//    @OneToOne
+//    private Image image;
     private Integer quantity;
 }

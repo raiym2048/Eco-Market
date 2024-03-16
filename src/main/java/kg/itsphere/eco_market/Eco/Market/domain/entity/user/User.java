@@ -10,6 +10,7 @@ import java.util.List;
 
 @Entity
 @Data
+@Table(name = "users")
 public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,8 +22,8 @@ public class User{
     private String phoneNumber;
     private String address;
     private Role role;
-    @OneToOne
-    private Busket busket;
-    @OneToMany
-    private List<Order> order;
+//    @OneToOne
+//    private Busket busket;
+//    @OneToMany
+//    private List<Order> order;
 }
