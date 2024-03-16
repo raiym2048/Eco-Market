@@ -21,6 +21,7 @@ public class User{
     private String password;
     private String phoneNumber;
     private String address;
+    @Enumerated(EnumType.STRING)
     private Role role;
 //    @OneToOne
 //    private Busket busket;

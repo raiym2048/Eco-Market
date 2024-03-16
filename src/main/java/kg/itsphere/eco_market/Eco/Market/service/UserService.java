@@ -1,5 +1,6 @@
 package kg.itsphere.eco_market.Eco.Market.service;
 
+import kg.itsphere.eco_market.Eco.Market.web.dto.user.UserRequest;
 import kg.itsphere.eco_market.Eco.Market.web.dto.user.UserResponse;
 
 import java.util.List;
@@ -9,4 +10,6 @@ public interface UserService {
     List<UserResponse> getAll();
     UserResponse findByEmail(String email);
     void controlUserRole(String userEmail, Map<String, Object> fields);
+
+    void register(UserRequest userRequest);
 }
