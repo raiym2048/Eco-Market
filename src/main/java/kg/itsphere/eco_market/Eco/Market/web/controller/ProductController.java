@@ -10,22 +10,4 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/product")
 public class ProductController {
     private final ProductService productService;
-
-    // it's for admin
-    @PostMapping("/add")
-    public void add(@RequestBody ProductRequest productRequest) {
-        productService.add(productRequest);
-    }
-
-    // it's for admin
-    @PutMapping("/updateByName/{name}")
-    public void updateByName(@PathVariable String name, @RequestBody ProductRequest productRequest) {
-        productService.updateByName(name, productRequest);
-    }
-
-    // it's for admin
-    @DeleteMapping("/deleteByName/{name}")
-    public void deleteByName(@PathVariable String name) {
-        productService.deleteByName(name);
-    }
 }
