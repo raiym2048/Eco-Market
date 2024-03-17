@@ -12,6 +12,6 @@ public class Busket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToMany
-    private List<Product> products;
+//    @OneToMany
+//    private List<Product> products;
 }
