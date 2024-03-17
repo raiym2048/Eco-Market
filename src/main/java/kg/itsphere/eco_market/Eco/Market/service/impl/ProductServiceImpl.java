@@ -1,8 +1,8 @@
 package kg.itsphere.eco_market.Eco.Market.service.impl;
 
 import kg.itsphere.eco_market.Eco.Market.domain.entity.product.Product;
-import kg.itsphere.eco_market.Eco.Market.exception.BadCredentialsException;
-import kg.itsphere.eco_market.Eco.Market.exception.NotFoundException;
+import kg.itsphere.eco_market.Eco.Market.domain.exception.BadCredentialsException;
+import kg.itsphere.eco_market.Eco.Market.domain.exception.NotFoundException;
 import kg.itsphere.eco_market.Eco.Market.repository.ProductRepository;
 import kg.itsphere.eco_market.Eco.Market.service.ProductService;
 import kg.itsphere.eco_market.Eco.Market.web.dto.product.ProductRequest;
