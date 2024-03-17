@@ -1,4 +1,4 @@
-package kg.itsphere.eco_market.Eco.Market.exception;
+package kg.itsphere.eco_market.Eco.Market.domain.exception;
 
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;

@@ -23,8 +23,8 @@ public class User{
     private String address;
     @Enumerated(EnumType.STRING)
     private Role role;
-//    @OneToOne
-//    private Busket busket;
-//    @OneToMany
-//    private List<Order> order;
+    @OneToOne
+    private Busket busket;
+    @OneToMany
+    private List<Order> order;
 }

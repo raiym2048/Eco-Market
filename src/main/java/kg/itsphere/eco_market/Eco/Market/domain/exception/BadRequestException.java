@@ -1,4 +1,4 @@
-package kg.itsphere.eco_market.Eco.Market.exception;
+package kg.itsphere.eco_market.Eco.Market.domain.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

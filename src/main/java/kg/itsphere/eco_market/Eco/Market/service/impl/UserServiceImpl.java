@@ -2,8 +2,8 @@ package kg.itsphere.eco_market.Eco.Market.service.impl;
 
 import kg.itsphere.eco_market.Eco.Market.domain.entity.enums.Role;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.user.User;
-import kg.itsphere.eco_market.Eco.Market.exception.BadCredentialsException;
-import kg.itsphere.eco_market.Eco.Market.exception.NotFoundException;
+import kg.itsphere.eco_market.Eco.Market.domain.exception.BadCredentialsException;
+import kg.itsphere.eco_market.Eco.Market.domain.exception.NotFoundException;
 import kg.itsphere.eco_market.Eco.Market.repository.UserRepository;
 import kg.itsphere.eco_market.Eco.Market.service.UserService;
 import kg.itsphere.eco_market.Eco.Market.web.dto.user.UserRequest;
