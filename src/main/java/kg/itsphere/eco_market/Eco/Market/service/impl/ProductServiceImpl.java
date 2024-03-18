@@ -6,11 +6,16 @@ import kg.itsphere.eco_market.Eco.Market.domain.exception.NotFoundException;
 import kg.itsphere.eco_market.Eco.Market.repository.ProductRepository;
 import kg.itsphere.eco_market.Eco.Market.service.ProductService;
 import kg.itsphere.eco_market.Eco.Market.web.dto.product.ProductRequest;
+import kg.itsphere.eco_market.Eco.Market.web.dto.product.ProductResponse;
 import kg.itsphere.eco_market.Eco.Market.web.mapper.ProductMapper;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -40,6 +45,22 @@ public class ProductServiceImpl implements ProductService {
         checker(product, name);
         productRepository.deleteByName(name);
     }
+
+    @Override
+    public List<ProductResponse> findAll() {
+        return productMapper.toDtoS(productRepository.findAll());
+    }
+
+    @Override
+    public List<ProductResponse> findProductsWithSorting(String field) {
+        return productMapper.toDtoS(productRepository.findAll(Sort.by(field)));
+    }
+
+    @Override
+    public Page<Product> findProductsWithPagination(int offset, int pageSize) {
+        return productRepository.findAll(PageRequest.of(offset, pageSize));
+    }
+
 
     private void checker(Optional<Product> product, String name) {
         if(product.isEmpty()) {
