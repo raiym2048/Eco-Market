@@ -6,11 +6,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import kg.itsphere.eco_market.Eco.Market.config.JwtService;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.enums.Role;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.user.User;
+import kg.itsphere.eco_market.Eco.Market.domain.entity.userInfo.Basket;
 import kg.itsphere.eco_market.Eco.Market.dto.AuthLoginRequest;
 import kg.itsphere.eco_market.Eco.Market.dto.AuthLoginResponse;
 import kg.itsphere.eco_market.Eco.Market.dto.UserRegisterRequest;
 import kg.itsphere.eco_market.Eco.Market.entities.Token;
 import kg.itsphere.eco_market.Eco.Market.enums.TokenType;
+import kg.itsphere.eco_market.Eco.Market.repository.BasketRepository;
 import kg.itsphere.eco_market.Eco.Market.repository.TokenRepository;
 import kg.itsphere.eco_market.Eco.Market.repository.UserRepository;
 import kg.itsphere.eco_market.Eco.Market.service.AuthService;
@@ -33,7 +35,7 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final TokenRepository tokenRepository;
     private final PasswordEncoder encoder;
-
+    private final BasketRepository basketRepository;
     @Override
     public void register(UserRegisterRequest request) {
         if(userRepository.findByEmail(request.getEmail()).isPresent()){
@@ -42,13 +44,17 @@ public class AuthServiceImpl implements AuthService {
         else if(userRepository.findByUsername(request.getUsername()).isPresent()){
             throw new BadCredentialsException("User with username"+ request .getUsername() + "already exist ");
         }
-        User user = new User();
+        var user = new User();
         user.setEmail(request.getEmail());
         user.setPassword(encoder.encode(request.getPassword()));
         user.setRole(Role.ROLE_USER);
-        var saveUser = userRepository.save(user);
+        var saveUser = userRepository.saveAndFlush(user);
+        Basket basket = new Basket();
+//        user.setBasket(basket);
+        basket.setUser(saveUser);
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
+        saveUser.setBasket(basketRepository.saveAndFlush(basket));
         saveUserToken(saveUser, jwtToken);
 
     }
