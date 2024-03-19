@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/v1/auth")
@@ -28,8 +30,8 @@ public class AuthController {
         return authService.login(authLoginRequest);
     }
 
-//    @PostMapping("/refresh")
-//    public void refresh(HttpServletRequest request, HttpServletResponse response) throws IOException {
-//        authService.refreshToken(request, response);
-//    }
+   @PostMapping("/refresh")
+   public void refresh(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        authService.refreshToken(request, response);
+    }
 }
