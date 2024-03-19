@@ -15,5 +15,7 @@ public class Order {
     private Long id;
     @OneToMany
     private List<Product> productList;
+    @ElementCollection
+    private List<Integer> quantities;
     private Long totalPrice;
 }

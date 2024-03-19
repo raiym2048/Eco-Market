@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Data
-public class Busket {
+public class Basket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
