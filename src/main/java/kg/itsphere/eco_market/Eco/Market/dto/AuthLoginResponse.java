@@ -10,6 +10,7 @@ import lombok.*;
 public class AuthLoginResponse {
     private Long id;
     private String email;
+    private String username;
     @JsonProperty("access_token")
     private String accessToken;
     @JsonProperty("refresh_token")

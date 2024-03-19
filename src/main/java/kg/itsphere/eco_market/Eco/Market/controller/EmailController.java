@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/vi/email")
+@RequestMapping("/api/v1/email")
 public class EmailController {
     private EmailService emailService;
     @PostMapping()
@@ -16,5 +16,6 @@ public class EmailController {
         emailService.send_code(token, request);
         return "We have sent a code to your email!";
     }
+
 
 }
