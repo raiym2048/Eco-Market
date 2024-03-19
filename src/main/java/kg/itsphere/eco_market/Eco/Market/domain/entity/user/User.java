@@ -5,6 +5,9 @@ import kg.itsphere.eco_market.Eco.Market.domain.entity.enums.Role;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.userInfo.Basket;
 
 import kg.itsphere.eco_market.Eco.Market.domain.entity.userInfo.Order;
+import lombok.Data;
+
+import kg.itsphere.eco_market.Eco.Market.domain.entity.userInfo.Order;
 import kg.itsphere.eco_market.Eco.Market.entities.Token;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
