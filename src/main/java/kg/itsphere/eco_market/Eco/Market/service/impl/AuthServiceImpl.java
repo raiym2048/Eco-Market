@@ -38,14 +38,11 @@ public class AuthServiceImpl implements AuthService {
     private final BasketRepository basketRepository;
     @Override
     public void register(UserRegisterRequest request) {
-        if(userRepository.findByEmail(request.getEmail()).isPresent()){
-            throw new BadCredentialsException("User with email"+ request.getEmail() + "already exist ");
-        }
-        else if(userRepository.findByUsername(request.getUsername()).isPresent()){
+        if(userRepository.findByUsername(request.getUsername()).isPresent()){
             throw new BadCredentialsException("User with username"+ request .getUsername() + "already exist ");
         }
         var user = new User();
-        user.setEmail(request.getEmail());
+        user.setUsername(request.getUsername());
         user.setPassword(encoder.encode(request.getPassword()));
         user.setRole(Role.ROLE_USER);
         var saveUser = userRepository.saveAndFlush(user);
@@ -64,14 +61,14 @@ public class AuthServiceImpl implements AuthService {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            authLoginRequest.getEmail(),
+                            authLoginRequest.getUsername(),
                             authLoginRequest.getPassword()
                     )
             );
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid email or password");
+            throw new BadCredentialsException("Invalid username or password");
         }
-        var user = userRepository.findByEmail(authLoginRequest.getEmail())
+        var user = userRepository.findByUsername(authLoginRequest.getUsername())
                 .orElseThrow(() -> new BadCredentialsException("user not found.."));
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
@@ -79,7 +76,7 @@ public class AuthServiceImpl implements AuthService {
         saveUserToken(user, jwtToken);
         return AuthLoginResponse.builder()
                 .id(user.getId())
-                .email(authLoginRequest.getEmail())
+                .username(authLoginRequest.getUsername())
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
                 .build();
