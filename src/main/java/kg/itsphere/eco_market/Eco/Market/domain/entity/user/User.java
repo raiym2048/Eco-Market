@@ -28,6 +28,9 @@ public class User implements  UserDetails{
     private String password;
     private String phoneNumber;
     private String address;
+    private String verifyCode;
+    private Boolean verified;
+    private String uuid;
     @Enumerated(EnumType.STRING)
     private Role role;
     @OneToOne
@@ -42,6 +45,10 @@ public class User implements  UserDetails{
         if (role == null)
             return Collections.singletonList(new SimpleGrantedAuthority("ROLE_DEFAULT"));
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.name()));
+    }
+    @Override
+    public String getUsername() {
+        return username;
     }
 
     @Override
