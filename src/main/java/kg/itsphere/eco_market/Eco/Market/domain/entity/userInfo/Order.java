@@ -13,7 +13,9 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-//    @OneToMany
-//    private List<Product> productList;
+    @OneToMany
+    private List<Product> productList;
+    @ElementCollection
+    private List<Integer> quantities;
     private Long totalPrice;
 }

@@ -1,7 +1,8 @@
 package kg.itsphere.eco_market.Eco.Market.service.impl;
 
 import kg.itsphere.eco_market.Eco.Market.domain.entity.info.Information;
-import kg.itsphere.eco_market.Eco.Market.exception.NotFoundException;
+
+import kg.itsphere.eco_market.Eco.Market.domain.exception.NotFoundException;
 import kg.itsphere.eco_market.Eco.Market.repository.InformationRepository;
 import kg.itsphere.eco_market.Eco.Market.service.InformationService;
 import kg.itsphere.eco_market.Eco.Market.web.dto.info.InformationRequest;
