@@ -1,8 +1,10 @@
 package kg.itsphere.eco_market.Eco.Market.service.impl;
 
+import kg.itsphere.eco_market.Eco.Market.domain.entity.product.Image;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.product.Product;
 import kg.itsphere.eco_market.Eco.Market.domain.exception.BadCredentialsException;
 import kg.itsphere.eco_market.Eco.Market.domain.exception.NotFoundException;
+import kg.itsphere.eco_market.Eco.Market.repository.ImageRepository;
 import kg.itsphere.eco_market.Eco.Market.repository.ProductRepository;
 import kg.itsphere.eco_market.Eco.Market.service.ProductService;
 import kg.itsphere.eco_market.Eco.Market.web.dto.product.ProductRequest;
@@ -23,6 +25,8 @@ import java.util.Optional;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+    private final ImageRepository imageRepository;
+
     @Override
     public void add(ProductRequest productRequest) {
         if(productRepository.findByName(productRequest.getName()).isPresent()) {
@@ -49,6 +53,18 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductResponse> findAll() {
         return productMapper.toDtoS(productRepository.findAll());
+    }
+
+    @Override
+    public void attachImageToProduct(String productName, String imageName) {
+        Optional<Product> product = productRepository.findByName(productName);
+        checker(product, productName);
+        Optional<Image> image = imageRepository.findByName(imageName);
+        if(image.isEmpty()) {
+            throw new NotFoundException("Image with name=\"" + imageName + "\" not found", HttpStatus.NOT_FOUND);
+        }
+        product.get().setImage(image.get());
+        productRepository.save(product.get());
     }
 
     @Override

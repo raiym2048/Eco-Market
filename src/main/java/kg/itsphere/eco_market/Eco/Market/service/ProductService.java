@@ -12,6 +12,7 @@ public interface ProductService {
     void updateByName(String name, ProductRequest productRequest);
     void deleteByName(String name);
     List<ProductResponse> findAll();
+    void attachImageToProduct(String productName, String imageName);
     List<ProductResponse> findProductsWithSorting(String field);
     Page<Product> findProductsWithPagination(int offset, int pageSize);
 }
