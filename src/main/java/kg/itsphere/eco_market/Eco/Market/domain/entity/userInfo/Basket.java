@@ -13,8 +13,9 @@ public class Basket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToMany
-    private List<Product> products;
     @OneToOne
     private User user;
+    @OneToMany
+    private List<BasketItem> items;
+
 }

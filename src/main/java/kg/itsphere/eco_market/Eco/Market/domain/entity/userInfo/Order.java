@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.product.Product;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -18,4 +19,5 @@ public class Order {
     @ElementCollection
     private List<Integer> quantities;
     private Long totalPrice;
+    private LocalDateTime createdDate;
 }
