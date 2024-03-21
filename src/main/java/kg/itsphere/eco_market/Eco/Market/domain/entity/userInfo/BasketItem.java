@@ -1,9 +1,6 @@
 package kg.itsphere.eco_market.Eco.Market.domain.entity.userInfo;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 
@@ -15,5 +12,6 @@ public class BasketItem {
     private Long id;
     private Long productId;
     private Integer quantity;
-
+    @ManyToOne
+    private Basket basket;
 }

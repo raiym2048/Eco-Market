@@ -1,4 +1,4 @@
-package kg.itsphere.eco_market.Eco.Market.dto;
+package kg.itsphere.eco_market.Eco.Market.web.dto.user;
 
 import lombok.Data;
 
