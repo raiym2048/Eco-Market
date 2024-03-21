@@ -9,8 +9,13 @@ public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique = true)
     private String name;
 
     @Column(name = "path")
     private String path;
+
+    @OneToOne(mappedBy = "image")
+    private Product product;
 }

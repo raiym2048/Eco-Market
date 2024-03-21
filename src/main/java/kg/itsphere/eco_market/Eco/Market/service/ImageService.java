@@ -1,20 +1,19 @@
 package kg.itsphere.eco_market.Eco.Market.service;
 
+import com.amazonaws.services.s3.model.S3Object;
 import jakarta.transaction.Transactional;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.product.Image;
+import kg.itsphere.eco_market.Eco.Market.web.dto.image.ImageResponse;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.List;
+
 public interface ImageService {
-    @Transactional
-    Image uploadFile(MultipartFile file, Image oldDocument);
 
-    Image uploadFile(MultipartFile file);
-
-    void uploadFileToS3Bucket(MultipartFile file);
-
+    List<ImageResponse> getAllImagesInfo();
+    S3Object getFile(String keyName);
+    String uploadFile(MultipartFile file);
     byte[] downloadFile(String fileName);
-
-    void deleteFile(Long id);
-
-    Image showById(Long id);
+    String deleteFile(String fileName);
 }

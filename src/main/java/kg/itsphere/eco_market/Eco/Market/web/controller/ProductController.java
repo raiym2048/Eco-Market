@@ -1,9 +1,11 @@
 package kg.itsphere.eco_market.Eco.Market.web.controller;
 
+import kg.itsphere.eco_market.Eco.Market.domain.entity.product.Product;
 import kg.itsphere.eco_market.Eco.Market.service.ProductService;
 import kg.itsphere.eco_market.Eco.Market.web.dto.product.ProductRequest;
 import kg.itsphere.eco_market.Eco.Market.web.dto.product.ProductResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,15 +16,14 @@ import java.util.List;
 public class ProductController {
     private final ProductService productService;
 
-    @PostMapping("/add")
-    public String add(@RequestBody ProductRequest productRequest){
-        productService.add(productRequest);
-        return "Product added successfully";
+    @GetMapping("/findProductWithSorting/{field}")
+    public List<ProductResponse> findProductsWithSorting(@PathVariable String field) {
+        return productService.findProductsWithSorting(field);
     }
 
-    @GetMapping("/all")
-    public List<ProductResponse> all(){
-        return productService.findAll();
+    @GetMapping("/findProductWithPagination/{offset}/pageSize/{pageSize}")
+    public Page<Product> findProductsWithPagination(@PathVariable int offset, @PathVariable int pageSize) {
+        return productService.findProductsWithPagination(offset, pageSize);
     }
 
 }
