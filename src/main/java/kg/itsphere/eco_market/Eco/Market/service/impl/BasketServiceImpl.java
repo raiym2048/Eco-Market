@@ -11,11 +11,10 @@ import kg.itsphere.eco_market.Eco.Market.repository.BasketRepository;
 import kg.itsphere.eco_market.Eco.Market.repository.ProductRepository;
 import kg.itsphere.eco_market.Eco.Market.service.AuthService;
 import kg.itsphere.eco_market.Eco.Market.service.BasketService;
-import kg.itsphere.eco_market.Eco.Market.web.dto.Basket.BasketRequest;
-import kg.itsphere.eco_market.Eco.Market.web.dto.Basket.BasketResponse;
+import kg.itsphere.eco_market.Eco.Market.web.dto.basket.BasketRequest;
+import kg.itsphere.eco_market.Eco.Market.web.dto.basket.BasketResponse;
 import kg.itsphere.eco_market.Eco.Market.web.mapper.BasketMapper;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 

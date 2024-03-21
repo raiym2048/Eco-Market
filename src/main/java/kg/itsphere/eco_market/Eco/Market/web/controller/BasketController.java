@@ -1,8 +1,8 @@
 package kg.itsphere.eco_market.Eco.Market.web.controller;
 
 import kg.itsphere.eco_market.Eco.Market.service.BasketService;
-import kg.itsphere.eco_market.Eco.Market.web.dto.Basket.BasketRequest;
-import kg.itsphere.eco_market.Eco.Market.web.dto.Basket.BasketResponse;
+import kg.itsphere.eco_market.Eco.Market.web.dto.basket.BasketRequest;
+import kg.itsphere.eco_market.Eco.Market.web.dto.basket.BasketResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

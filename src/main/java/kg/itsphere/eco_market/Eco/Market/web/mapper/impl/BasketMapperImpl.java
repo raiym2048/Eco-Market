@@ -4,7 +4,7 @@ import kg.itsphere.eco_market.Eco.Market.domain.entity.product.Product;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.userInfo.Basket;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.userInfo.BasketItem;
 import kg.itsphere.eco_market.Eco.Market.repository.ProductRepository;
-import kg.itsphere.eco_market.Eco.Market.web.dto.Basket.BasketResponse;
+import kg.itsphere.eco_market.Eco.Market.web.dto.basket.BasketResponse;
 import kg.itsphere.eco_market.Eco.Market.web.mapper.BasketMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
