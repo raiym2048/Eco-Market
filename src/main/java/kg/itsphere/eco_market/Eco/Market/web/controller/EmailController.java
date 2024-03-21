@@ -1,9 +1,8 @@
-package kg.itsphere.eco_market.Eco.Market.controller;
+package kg.itsphere.eco_market.Eco.Market.web.controller;
 
-import kg.itsphere.eco_market.Eco.Market.dto.CodeRequest;
-import kg.itsphere.eco_market.Eco.Market.dto.EmailRequest;
-import kg.itsphere.eco_market.Eco.Market.dto.RecoveryRequest;
-import kg.itsphere.eco_market.Eco.Market.dto.UserRegisterRequest;
+import kg.itsphere.eco_market.Eco.Market.web.dto.user.CodeRequest;
+import kg.itsphere.eco_market.Eco.Market.web.dto.user.EmailRequest;
+import kg.itsphere.eco_market.Eco.Market.web.dto.user.RecoveryRequest;
 import kg.itsphere.eco_market.Eco.Market.service.EmailService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;

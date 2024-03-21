@@ -1,8 +1,8 @@
-package kg.itsphere.eco_market.Eco.Market.entities;
+package kg.itsphere.eco_market.Eco.Market.domain.entity;
 
 import jakarta.persistence.*;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.user.User;
-import kg.itsphere.eco_market.Eco.Market.enums.TokenType;
+import kg.itsphere.eco_market.Eco.Market.domain.entity.enums.TokenType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
