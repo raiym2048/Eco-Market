@@ -3,9 +3,9 @@ package kg.itsphere.eco_market.Eco.Market.service;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.user.User;
-import kg.itsphere.eco_market.Eco.Market.dto.AuthLoginRequest;
-import kg.itsphere.eco_market.Eco.Market.dto.AuthLoginResponse;
-import kg.itsphere.eco_market.Eco.Market.dto.UserRegisterRequest;
+import kg.itsphere.eco_market.Eco.Market.web.dto.auth.AuthLoginRequest;
+import kg.itsphere.eco_market.Eco.Market.web.dto.auth.AuthLoginResponse;
+import kg.itsphere.eco_market.Eco.Market.web.dto.user.UserRegisterRequest;
 
 import java.io.IOException;
 
