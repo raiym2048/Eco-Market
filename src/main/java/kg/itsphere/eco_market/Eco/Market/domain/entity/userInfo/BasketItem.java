@@ -1,17 +1,17 @@
 package kg.itsphere.eco_market.Eco.Market.domain.entity.userInfo;
 
 import jakarta.persistence.*;
-import kg.itsphere.eco_market.Eco.Market.domain.entity.product.Product;
 import lombok.Data;
-
-import java.util.List;
+import lombok.Getter;
 
 @Entity
 @Data
-public class Busket {
+public class BasketItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToMany
-    private List<Product> products;
+    private Long productId;
+    private Integer quantity;
+    @ManyToOne
+    private Basket basket;
 }
