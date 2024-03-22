@@ -23,21 +23,27 @@ public class AdminController {
     private final InformationService informationService;
 
     // It's for adding the product
-    @PostMapping("/add")
+    @PostMapping("/product/add")
     public void add(@RequestBody ProductRequest productRequest) {
         productService.add(productRequest);
     }
 
     // It's for updating the product. Admin will find the product with its name, and he can update all fields of the product
-    @PutMapping("/updateByName/{name}")
+    @PutMapping("/product/updateByName/{name}")
     public void updateByName(@PathVariable String name, @RequestBody ProductRequest productRequest) {
         productService.updateByName(name, productRequest);
     }
 
     // It's for deleting the product. Also, admin will delete the product with its name
-    @DeleteMapping("/deleteByName/{name}")
+    @DeleteMapping("/product/deleteByName/{name}")
     public void deleteByName(@PathVariable String name) {
         productService.deleteByName(name);
+    }
+
+    // Admin will attach photo to product with this endpoint
+    @PostMapping("/product/attachImageToProduct/{productName}/image/{imageName}")
+    public void attachImageToProduct(@PathVariable String productName, @PathVariable String imageName) {
+        productService.attachImageToProduct(productName, imageName);
     }
 
 
@@ -85,4 +91,7 @@ public class AdminController {
     void deleteById(@PathVariable Long id) {
         informationService.deleteById(id);
     }
+
+
+    
 }
