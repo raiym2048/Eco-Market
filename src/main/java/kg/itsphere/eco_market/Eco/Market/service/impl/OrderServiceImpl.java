@@ -7,6 +7,7 @@ import kg.itsphere.eco_market.Eco.Market.repository.OrderRepository;
 import kg.itsphere.eco_market.Eco.Market.service.AuthService;
 import kg.itsphere.eco_market.Eco.Market.service.OrderService;
 import kg.itsphere.eco_market.Eco.Market.web.dto.order.OrderDetailResponse;
+import kg.itsphere.eco_market.Eco.Market.web.dto.order.OrderDetailResponseForAdmin;
 import kg.itsphere.eco_market.Eco.Market.web.dto.order.OrderResponse;
 import kg.itsphere.eco_market.Eco.Market.web.mapper.OrderMapper;
 import lombok.RequiredArgsConstructor;
@@ -36,5 +37,19 @@ public class OrderServiceImpl implements OrderService {
         if(order.isEmpty())
             throw new NotFoundException("Order with id: " + id + " - not found!", HttpStatus.NOT_FOUND);
         return orderMapper.toDetailDto(order.get());
+    }
+
+    @Override
+    public List<OrderResponse> getAllOrders() {
+        return orderMapper.toDtos(orderRepository.findAll());
+    }
+
+    @Override
+    public OrderDetailResponseForAdmin getPersonOrder(Long id) {
+        Optional<Order> order = orderRepository.findById(id);
+        if(order.isEmpty()) {
+            throw new NotFoundException("Order with id: " + id + " - not found!", HttpStatus.NOT_FOUND);
+        }
+        return orderMapper.toDtoAdmin(order.get());
     }
 }

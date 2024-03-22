@@ -3,6 +3,7 @@ package kg.itsphere.eco_market.Eco.Market.web.mapper.impl;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.userInfo.Order;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.userInfo.OrderItem;
 import kg.itsphere.eco_market.Eco.Market.web.dto.order.OrderDetailResponse;
+import kg.itsphere.eco_market.Eco.Market.web.dto.order.OrderDetailResponseForAdmin;
 import kg.itsphere.eco_market.Eco.Market.web.dto.order.OrderResponse;
 import kg.itsphere.eco_market.Eco.Market.web.mapper.OrderMapper;
 import org.aspectj.weaver.ast.Or;
@@ -65,5 +66,38 @@ public class OrderMapperImpl implements OrderMapper {
         response.setSum(sum);
 
         return response;
+    }
+
+    @Override
+    public OrderDetailResponseForAdmin toDtoAdmin(Order order) {
+        OrderDetailResponseForAdmin responseForAdmin = new OrderDetailResponseForAdmin();
+        responseForAdmin.setId(order.getId());
+        responseForAdmin.setDateTime(order.getDateTime());
+        responseForAdmin.setUserEmail(order.getUser().getEmail());
+        responseForAdmin.setDelivery(150);
+        int sum = 0;
+        List<String> names = new ArrayList<>();
+        List<Long> imageIds = new ArrayList<>();
+        List<Integer> prices = new ArrayList<>();
+        List<Integer> quantities = new ArrayList<>();
+        List<Integer> detailSums = new ArrayList<>();
+        for(OrderItem item: order.getItems()){
+            names.add(item.getName());
+            if(item.getImageId() != null)
+                imageIds.add(item.getImageId());
+            else imageIds.add(null);
+            prices.add(item.getPrice());
+            quantities.add(item.getQuantity());
+            detailSums.add(item.getPrice() * item.getQuantity());
+            sum += item.getPrice() * item.getQuantity();
+        }
+        responseForAdmin.setNames(names);
+        responseForAdmin.setImageIds(imageIds);
+        responseForAdmin.setPrices(prices);
+        responseForAdmin.setQuantities(quantities);
+        responseForAdmin.setDetailSums(detailSums);
+        responseForAdmin.setSum(sum);
+
+        return responseForAdmin;
     }
 }

@@ -19,4 +19,6 @@ public interface BasketService {
     void check(String token);
 
     OrderResponse buy(OrderRequest request, String token);
+
+    void clear(String token);
 }
