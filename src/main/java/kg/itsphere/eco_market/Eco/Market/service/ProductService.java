@@ -1,5 +1,6 @@
 package kg.itsphere.eco_market.Eco.Market.service;
 
+import kg.itsphere.eco_market.Eco.Market.domain.entity.product.Category;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.product.Product;
 import kg.itsphere.eco_market.Eco.Market.web.dto.product.ProductRequest;
 import kg.itsphere.eco_market.Eco.Market.web.dto.product.ProductResponse;
@@ -15,4 +16,7 @@ public interface ProductService {
     void attachImageToProduct(String productName, String imageName);
     List<ProductResponse> findProductsWithSorting(String field);
     Page<Product> findProductsWithPagination(int offset, int pageSize);
+    ProductResponse findByName(String name);
+    List<ProductResponse> findByCategory(Category category);
+
 }

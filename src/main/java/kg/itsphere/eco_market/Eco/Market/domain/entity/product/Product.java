@@ -19,4 +19,5 @@ public class Product {
     @JoinColumn
     private Image image;
     private Integer quantity;
+
 }

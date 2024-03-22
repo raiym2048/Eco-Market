@@ -13,4 +13,5 @@ public interface AuthService {
     void register(UserRegisterRequest userRegisterRequest);
     AuthLoginResponse login(AuthLoginRequest authLoginRequest);
     public User getUserFromToken(String token);
+
 }

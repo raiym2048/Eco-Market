@@ -96,6 +96,7 @@ public class AuthServiceImpl implements AuthService {
                 .id(user.getId())
                 .username(authLoginRequest.getUsername())
                 .accessToken(jwtToken)
+
                 .build();
 
     }
@@ -120,17 +121,7 @@ public class AuthServiceImpl implements AuthService {
                 .build();
         tokenRepository.save(token);
     }
-    private AuthLoginResponse convertToResponse(User user) {
-        AuthLoginResponse response = new AuthLoginResponse();
-        Map<String, Object> extraClaims = new HashMap<>();
 
-        String token = jwtService.generateToken(extraClaims, user);
-        String refreshToken = jwtService.generateRefreshToken(user);
-        revokeAllUserTokens(user);
-        saveUserToken(user, token);
-        response.setAccessToken(token);
-        return response;
-    }
     @Override
     public User getUserFromToken(String token){
 

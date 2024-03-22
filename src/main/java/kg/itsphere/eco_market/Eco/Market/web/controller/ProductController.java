@@ -1,5 +1,7 @@
 package kg.itsphere.eco_market.Eco.Market.web.controller;
 
+import kg.itsphere.eco_market.Eco.Market.domain.entity.product.Category;
+import kg.itsphere.eco_market.Eco.Market.domain.entity.product.Product;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.product.Product;
 import kg.itsphere.eco_market.Eco.Market.service.ProductService;
 import kg.itsphere.eco_market.Eco.Market.web.dto.product.ProductRequest;
@@ -25,5 +27,14 @@ public class ProductController {
     public Page<Product> findProductsWithPagination(@PathVariable int offset, @PathVariable int pageSize) {
         return productService.findProductsWithPagination(offset, pageSize);
     }
+    @GetMapping("/findByName/{name}")
+    public ProductResponse findProductsByName(@PathVariable String name){
+        return productService.findByName(name);
+    }
+    @GetMapping("/findByCategory/{category}")
+    public List<ProductResponse> findProductsByCategory(@PathVariable Category category){
+        return productService.findByCategory(category);
+    }
+
 
 }
