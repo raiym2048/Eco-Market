@@ -2,6 +2,7 @@ package kg.itsphere.eco_market.Eco.Market.web.mapper;
 
 import kg.itsphere.eco_market.Eco.Market.domain.entity.userInfo.Order;
 import kg.itsphere.eco_market.Eco.Market.web.dto.order.OrderDetailResponse;
+import kg.itsphere.eco_market.Eco.Market.web.dto.order.OrderDetailResponseForAdmin;
 import kg.itsphere.eco_market.Eco.Market.web.dto.order.OrderResponse;
 
 import java.util.List;
@@ -13,4 +14,5 @@ public interface OrderMapper {
     List<OrderResponse> toDtos(List<Order> orders);
 
     OrderDetailResponse toDetailDto(Order order);
+    OrderDetailResponseForAdmin toDtoAdmin(Order order);
 }
