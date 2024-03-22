@@ -3,6 +3,7 @@ package kg.itsphere.eco_market.Eco.Market.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import kg.itsphere.eco_market.Eco.Market.domain.entity.userInfo.Order;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
@@ -46,10 +47,6 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder encoder;
     private final BasketRepository basketRepository;
 
-    @Autowired
-    private JavaMailSender mailSender;
-    private static final Pattern PASSWORD_PATTERN = Pattern.compile(
-            "^(?=.*[0-9a-zA-Z]{8,})(?=.*[@#$%^&+=]{2,}).*$");
     @Override
     public void register(UserRegisterRequest request) {
         if(userRepository.findByUsername(request.getUsername()).isPresent()){
@@ -65,20 +62,17 @@ public class AuthServiceImpl implements AuthService {
 //        }
         user.setPassword(encoder.encode(request.getPassword()));
         user.setRole(Role.ROLE_USER);
+        user.setPhoneNumber(request.getPhoneNumber());
         var saveUser = userRepository.saveAndFlush(user);
         Basket basket = new Basket();
         user.setVerified(false);
         basket.setUser(saveUser);
         var jwtToken = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(user);
         saveUser.setBasket(basketRepository.saveAndFlush(basket));
         saveUserToken(saveUser, jwtToken);
 
     }
-    private boolean validatePassword(String password) {
-        Matcher matcher = PASSWORD_PATTERN.matcher(password);
-        return matcher.matches();
-    }
+
 
     @Override
     public AuthLoginResponse login(AuthLoginRequest authLoginRequest) {
@@ -102,7 +96,6 @@ public class AuthServiceImpl implements AuthService {
                 .id(user.getId())
                 .username(authLoginRequest.getUsername())
                 .accessToken(jwtToken)
-                .refreshToken(refreshToken)
                 .build();
 
     }
@@ -136,8 +129,6 @@ public class AuthServiceImpl implements AuthService {
         revokeAllUserTokens(user);
         saveUserToken(user, token);
         response.setAccessToken(token);
-        response.setRefreshToken(refreshToken);
-
         return response;
     }
     @Override
@@ -158,29 +149,7 @@ public class AuthServiceImpl implements AuthService {
         return userRepository.findByUsername(String.valueOf(object.get("sub"))).orElseThrow(() -> new BadCredentialsException("Wrong token!!!"));
     }
 
-    @Override
-    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        final String authHeader = request.getHeader("Authorization");
-        final String refreshToken;
-        final String username;
-        if(authHeader == null || !authHeader.startsWith("Bearer ")){
-            return;
-        }
-        refreshToken = authHeader.substring(7);
-        username = jwtService.extractUsername(refreshToken);
-        if(username != null){
-            var user = this.userRepository.findByUsername(username).orElseThrow();
-            if(jwtService.isTokenValid(refreshToken, user)){
-                var accessToken = jwtService.generateToken(user);
-                AuthLoginResponse authResponse = new AuthLoginResponse();
-                authResponse.setAccessToken(accessToken);
-                authResponse.setRefreshToken(refreshToken);
-                revokeAllUserTokens(user);
-                saveUserToken(user, accessToken);
-                new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
-            }
-        }
-    }
+
 
 
 }
