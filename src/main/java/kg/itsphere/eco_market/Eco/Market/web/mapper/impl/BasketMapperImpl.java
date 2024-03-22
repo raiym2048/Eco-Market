@@ -20,14 +20,13 @@ public class BasketMapperImpl implements BasketMapper {
     private final ProductRepository productRepository;
     private final BasketService basketService;
 
-    // Response without images
     @Override
     public BasketResponse toDto(Basket basket) {
         BasketResponse response = new BasketResponse();
         List<String> titles = new ArrayList<>();
         List<Integer> prices = new ArrayList<>();
         List<Integer> quantities = new ArrayList<>();
-//        List<String> imageNames = new ArrayList<>();
+        List<Long> imageIds = new ArrayList<>();
         int sum = 0;
         int delivery = 150;
         List<BasketItem> items = basket.getItems();
@@ -41,9 +40,10 @@ public class BasketMapperImpl implements BasketMapper {
             titles.add(product.get().getName());
             prices.add(product.get().getPrice());
             quantities.add(item.getQuantity());
+            if(product.get().getImage() != null)
+                imageIds.add(product.get().getImage().getId());
+            else imageIds.add(null);
             sum += product.get().getPrice() * item.getQuantity();
-//            if(item.getImage() != null)
-//                imageNames.add(item.getImage().getName());
         }
         response.setTitles(titles);
         response.setPrices(prices);
@@ -51,7 +51,7 @@ public class BasketMapperImpl implements BasketMapper {
         response.setSum(sum);
         response.setDelivery(delivery);
         response.setTotal(sum + delivery);
-//        response.setImageNames(imageNames);
+        response.setImageIds(imageIds);
 
         return response;
     }
