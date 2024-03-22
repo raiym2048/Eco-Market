@@ -2,6 +2,7 @@ package kg.itsphere.eco_market.Eco.Market.domain.entity.userInfo;
 
 import jakarta.persistence.*;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.product.Product;
+import kg.itsphere.eco_market.Eco.Market.domain.entity.user.User;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -14,10 +15,10 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @ManyToOne
+    private User user;
     @OneToMany
-    private List<Product> productList;
-    @ElementCollection
-    private List<Integer> quantities;
-    private Long totalPrice;
-    private LocalDateTime createdDate;
+    private List<OrderItem> items;
+    private LocalDateTime dateTime;
+
 }
