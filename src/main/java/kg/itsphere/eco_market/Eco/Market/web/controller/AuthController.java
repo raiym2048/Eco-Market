@@ -2,6 +2,8 @@ package kg.itsphere.eco_market.Eco.Market.web.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import kg.itsphere.eco_market.Eco.Market.domain.exception.BadCredentialsException;
+import kg.itsphere.eco_market.Eco.Market.service.impl.PasswordValidationService;
 import kg.itsphere.eco_market.Eco.Market.web.dto.auth.AuthLoginRequest;
 import kg.itsphere.eco_market.Eco.Market.web.dto.auth.AuthLoginResponse;
 import kg.itsphere.eco_market.Eco.Market.web.dto.user.UserRegisterRequest;
@@ -19,18 +21,20 @@ import java.io.IOException;
 @RequestMapping("/api/v1/auth")
 public class AuthController {
     private final AuthService authService;
+    private final PasswordValidationService passwordValidationService;
     @PostMapping("/register")
     public String register(@RequestBody UserRegisterRequest userRegisterRequest){
-        authService.register(userRegisterRequest);
-        return "User: " + userRegisterRequest.getUsername() +  " - added successfully!";
+        if(passwordValidationService.validatePassword(userRegisterRequest.getPassword())) {
+            authService.register(userRegisterRequest);
+            return "User: " + userRegisterRequest.getUsername() + " - added successfully!";
+        }
+        else{
+            throw new BadCredentialsException("Invalid password. Please provide a password with at least 6 characters, containing uppercase, lowercase, and special characters.");
+        }
     }
     @PostMapping("/login")
     public AuthLoginResponse login(@RequestBody AuthLoginRequest authLoginRequest){
         return authService.login(authLoginRequest);
     }
 
-   @PostMapping("/refresh")
-   public void refresh(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        authService.refreshToken(request, response);
-    }
 }

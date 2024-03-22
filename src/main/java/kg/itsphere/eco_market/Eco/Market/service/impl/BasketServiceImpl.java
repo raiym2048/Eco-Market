@@ -170,4 +170,15 @@ public class BasketServiceImpl implements BasketService {
         Order order1 = orderRepository.saveAndFlush(saveOrder);
         return orderMapper.toDto(order1);
     }
+
+    @Override
+    public void clear(String token) {
+        User user = authService.getUserFromToken(token);
+        Basket basket = user.getBasket();
+        for(BasketItem item: basket.getItems()) item.setBasket(null);
+        List<BasketItem> items = basket.getItems();
+        basket.setItems(null);
+        basketRepository.save(basket);
+        basketItemRepository.deleteAll(items);
+    }
 }

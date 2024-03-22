@@ -54,6 +54,12 @@ public class BasketController {
         return "Quantity updated successfully!";
     }
 
+    @DeleteMapping("/clear")
+    public String clear(@RequestHeader("Authorization")String token){
+        basketService.clear(token);
+        return "Your basket is empty!";
+    }
+
     @PostMapping("/check")
     public void check(@RequestHeader("Authorization") String token){
         basketService.check(token);
