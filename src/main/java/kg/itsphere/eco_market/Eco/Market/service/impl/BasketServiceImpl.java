@@ -13,12 +13,10 @@ import kg.itsphere.eco_market.Eco.Market.service.AuthService;
 import kg.itsphere.eco_market.Eco.Market.service.BasketService;
 import kg.itsphere.eco_market.Eco.Market.web.dto.basket.BasketRequest;
 import kg.itsphere.eco_market.Eco.Market.web.dto.basket.BasketResponse;
-import kg.itsphere.eco_market.Eco.Market.web.dto.basket.OrderRequest;
-import kg.itsphere.eco_market.Eco.Market.web.dto.order.OrderDetailResponse;
+import kg.itsphere.eco_market.Eco.Market.web.dto.order.OrderRequest;
 import kg.itsphere.eco_market.Eco.Market.web.dto.order.OrderResponse;
 import kg.itsphere.eco_market.Eco.Market.web.mapper.BasketMapper;
 import kg.itsphere.eco_market.Eco.Market.web.mapper.OrderMapper;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
@@ -54,7 +52,6 @@ public class BasketServiceImpl implements BasketService {
         }
         if(request.getQuantity() > product.get().getQuantity())
             throw new BadRequestException("There is only " + product.get().getQuantity() + " products!");
-//        product.get().setQuantity(product.get().getQuantity() - request.getQuantity());
 
         BasketItem item = new BasketItem();
         item.setProductId(request.getProductId());
@@ -67,7 +64,6 @@ public class BasketServiceImpl implements BasketService {
         if(basket.getItems() != null) items = basket.getItems();
         items.add(basketItem);
         basket.setItems(items);
-//        productRepository.save(product.get());
         basketRepository.save(basket);
     }
 
@@ -80,24 +76,10 @@ public class BasketServiceImpl implements BasketService {
 
     @Override
     public void delete(BasketItem item, Basket basket) {
-//        User user = authService.getUserFromToken(token);
-//        Basket basket = basketRepository.findById(user.getId()).get();
-//        Optional<BasketItem> item = basketItemRepository.findByProductIdAndBasket(request.getProductId(), basket);
-
-//        Optional<Product> product = productRepository.findById(request.getProductId());
-//        product.get().setQuantity(product.get().getQuantity() + item.get().getQuantity());
-
         basket.getItems().remove(item);
         basketRepository.save(basket);
         item.setBasket(null);
 
-//        Image image = item.get().getImage();
-//        List<CartItem> items = image.getItems();
-//        items.remove(item.get());
-//        image.setItems(items);
-//        imageRepository.save(image);
-//        item.get().setImage(null);
-//        productRepository.save(product.get());
         basketItemRepository.delete(item);
     }
 
@@ -113,8 +95,6 @@ public class BasketServiceImpl implements BasketService {
         if(request.getQuantity() > allSum)
             throw new BadRequestException("There is only " + allSum + " products!");
         item.get().setQuantity(request.getQuantity());
-//        product.get().setQuantity(allSum - request.getQuantity());
-//        productRepository.save(product.get());
         basketItemRepository.save(item.get());
     }
 
@@ -174,6 +154,9 @@ public class BasketServiceImpl implements BasketService {
             orderItem.setName(product.getName());
             orderItem.setPrice(product.getPrice());
             orderItem.setOrder(saveOrder);
+            if(product.getImage() != null)
+                orderItem.setImageId(product.getImage().getId());
+            else orderItem.setImageId(null);
             orderItems.add(orderItemRepository.saveAndFlush(orderItem));
             item.setBasket(null);
             product.setQuantity(product.getQuantity() - item.getQuantity());

@@ -12,6 +12,7 @@ public class OrderDetailResponse {
     private Integer sum;
     private Integer delivery;
     private List<String> names;
+    private List<Long> imageIds;
     private List<Integer> prices;
     private List<Integer> quantities;
     private List<Integer> detailSums;

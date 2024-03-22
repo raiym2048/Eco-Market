@@ -1,10 +1,16 @@
 package kg.itsphere.eco_market.Eco.Market.domain.entity.product;
 
 import jakarta.persistence.*;
+import kg.itsphere.eco_market.Eco.Market.domain.entity.userInfo.OrderItem;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

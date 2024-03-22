@@ -9,7 +9,7 @@ public class BasketResponse {
     private List<String> titles;
     private List<Integer> prices;
     private List<Integer> quantities;
-    //    private List<String> imageNames;
+    private List<Long> imageIds;
     private Integer sum;
     private Integer delivery;
     private Integer total;

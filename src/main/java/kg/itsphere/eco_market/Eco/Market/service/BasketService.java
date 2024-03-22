@@ -4,8 +4,7 @@ import kg.itsphere.eco_market.Eco.Market.domain.entity.userInfo.Basket;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.userInfo.BasketItem;
 import kg.itsphere.eco_market.Eco.Market.web.dto.basket.BasketRequest;
 import kg.itsphere.eco_market.Eco.Market.web.dto.basket.BasketResponse;
-import kg.itsphere.eco_market.Eco.Market.web.dto.basket.OrderRequest;
-import kg.itsphere.eco_market.Eco.Market.web.dto.order.OrderDetailResponse;
+import kg.itsphere.eco_market.Eco.Market.web.dto.order.OrderRequest;
 import kg.itsphere.eco_market.Eco.Market.web.dto.order.OrderResponse;
 
 public interface BasketService {
