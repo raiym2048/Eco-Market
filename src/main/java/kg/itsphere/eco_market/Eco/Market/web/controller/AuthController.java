@@ -1,5 +1,7 @@
 package kg.itsphere.eco_market.Eco.Market.web.controller;
 
+import kg.itsphere.eco_market.Eco.Market.domain.exception.BadCredentialsException;
+import kg.itsphere.eco_market.Eco.Market.service.impl.PasswordValidationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kg.itsphere.eco_market.Eco.Market.domain.exception.BadCredentialsException;
@@ -13,8 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.io.IOException;
 
 @RestController
 @AllArgsConstructor
@@ -36,5 +36,7 @@ public class AuthController {
     public AuthLoginResponse login(@RequestBody AuthLoginRequest authLoginRequest){
         return authService.login(authLoginRequest);
     }
+
+
 
 }
