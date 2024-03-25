@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.userInfo.Order;
+import kg.itsphere.eco_market.Eco.Market.domain.exception.NotFoundException;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
@@ -22,6 +23,7 @@ import kg.itsphere.eco_market.Eco.Market.repository.UserRepository;
 import kg.itsphere.eco_market.Eco.Market.service.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -49,25 +51,28 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void register(UserRegisterRequest request) {
+
         if(userRepository.findByUsername(request.getUsername()).isPresent()){
-            throw new BadCredentialsException("User with username"+ request .getUsername() + "already exist ");
+            throw new NotFoundException("User with username "+ request .getUsername() + " already exist " , HttpStatus.NOT_FOUND);
+        }
+        else if(userRepository.findByEmail(request.getEmail()).isPresent()){
+            throw new NotFoundException("User with email "+ request .getUsername() + " already exist " , HttpStatus.NOT_FOUND);
         }
         var user = new User();
+
         user.setUsername(request.getUsername());
-//        if(validatePassword(encoder.encode(request.getPassword()))){
-//            user.setPassword(encoder.encode(request.getPassword()));
-//        }
-//        else {
-//            throw new BadRequestException()
-//        }
+
         user.setPassword(encoder.encode(request.getPassword()));
         user.setRole(Role.ROLE_USER);
+
         user.setPhoneNumber(request.getPhoneNumber());
         var saveUser = userRepository.saveAndFlush(user);
+
         Basket basket = new Basket();
         user.setVerified(false);
         basket.setUser(saveUser);
         var jwtToken = jwtService.generateToken(user);
+
         saveUser.setBasket(basketRepository.saveAndFlush(basket));
         saveUserToken(saveUser, jwtToken);
 

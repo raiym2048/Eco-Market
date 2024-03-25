@@ -2,10 +2,7 @@ package kg.itsphere.eco_market.Eco.Market.web.controller;
 
 import kg.itsphere.eco_market.Eco.Market.domain.exception.BadCredentialsException;
 import kg.itsphere.eco_market.Eco.Market.service.impl.PasswordValidationService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import kg.itsphere.eco_market.Eco.Market.domain.exception.BadCredentialsException;
-import kg.itsphere.eco_market.Eco.Market.service.impl.PasswordValidationService;
+
 import kg.itsphere.eco_market.Eco.Market.web.dto.auth.AuthLoginRequest;
 import kg.itsphere.eco_market.Eco.Market.web.dto.auth.AuthLoginResponse;
 import kg.itsphere.eco_market.Eco.Market.web.dto.user.UserRegisterRequest;
@@ -25,6 +22,7 @@ public class AuthController {
     @PostMapping("/register")
     public String register(@RequestBody UserRegisterRequest userRegisterRequest){
         if(passwordValidationService.validatePassword(userRegisterRequest.getPassword())) {
+
             authService.register(userRegisterRequest);
             return "User: " + userRegisterRequest.getUsername() + " - added successfully!";
         }
