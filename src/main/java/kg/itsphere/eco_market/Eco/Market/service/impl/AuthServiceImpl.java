@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.userInfo.Order;
+import kg.itsphere.eco_market.Eco.Market.domain.exception.BadRequestException;
 import kg.itsphere.eco_market.Eco.Market.domain.exception.NotFoundException;
+import kg.itsphere.eco_market.Eco.Market.service.EmailService;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
@@ -24,6 +26,7 @@ import kg.itsphere.eco_market.Eco.Market.service.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -31,6 +34,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.io.IOException;
 import java.util.Base64;
@@ -48,20 +52,20 @@ public class AuthServiceImpl implements AuthService {
     private final TokenRepository tokenRepository;
     private final PasswordEncoder encoder;
     private final BasketRepository basketRepository;
+    private final EmailService emailService;
 
     @Override
     public void register(UserRegisterRequest request) {
+        if(userRepository.findByUsername(request.getUsername()).isPresent()&&userRepository.findByEmail(request.getEmail()).isPresent()){
+            throw new NotFoundException("User "+ request .getUsername() + " already exist " , HttpStatus.NOT_FOUND);
+        } else if (!request.getEmail().contains("@")) {
+            throw new BadCredentialsException("invalid email!");
+        }
 
-        if(userRepository.findByUsername(request.getUsername()).isPresent()){
-            throw new NotFoundException("User with username "+ request .getUsername() + " already exist " , HttpStatus.NOT_FOUND);
-        }
-        else if(userRepository.findByEmail(request.getEmail()).isPresent()){
-            throw new NotFoundException("User with email "+ request .getUsername() + " already exist " , HttpStatus.NOT_FOUND);
-        }
         var user = new User();
 
         user.setUsername(request.getUsername());
-
+        user.setEmail(request.getEmail());
         user.setPassword(encoder.encode(request.getPassword()));
         user.setRole(Role.ROLE_USER);
 
@@ -75,6 +79,7 @@ public class AuthServiceImpl implements AuthService {
 
         saveUser.setBasket(basketRepository.saveAndFlush(basket));
         saveUserToken(saveUser, jwtToken);
+
 
     }
 
