@@ -8,6 +8,7 @@ import kg.itsphere.eco_market.Eco.Market.web.dto.auth.AuthLoginResponse;
 import kg.itsphere.eco_market.Eco.Market.web.dto.user.UserRegisterRequest;
 import kg.itsphere.eco_market.Eco.Market.service.AuthService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,12 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     private final AuthService authService;
     private final PasswordValidationService passwordValidationService;
-    @PostMapping("/register")
-    public String register(@RequestBody UserRegisterRequest userRegisterRequest){
-        if(passwordValidationService.validatePassword(userRegisterRequest.getPassword())) {
 
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@RequestBody UserRegisterRequest userRegisterRequest){
+        if(passwordValidationService.validatePassword(userRegisterRequest.getPassword())) {
             authService.register(userRegisterRequest);
-            return "User: " + userRegisterRequest.getUsername() + " - added successfully!";
+            return ResponseEntity.ok( "User"+ userRegisterRequest.getUsername() + " - added successfully!");
         }
         else{
             throw new BadCredentialsException("Invalid password. Please provide a password with at least 6 characters, containing uppercase, lowercase, and special characters.");

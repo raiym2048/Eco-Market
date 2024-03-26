@@ -52,18 +52,20 @@ public class AuthServiceImpl implements AuthService {
     private final TokenRepository tokenRepository;
     private final PasswordEncoder encoder;
     private final BasketRepository basketRepository;
-    private final EmailService emailService;
 
     @Override
     public void register(UserRegisterRequest request) {
-        if(userRepository.findByUsername(request.getUsername()).isPresent()&&userRepository.findByEmail(request.getEmail()).isPresent()){
-            throw new NotFoundException("User "+ request .getUsername() + " already exist " , HttpStatus.NOT_FOUND);
+        if (userRepository.findByUsername(request.getUsername()).isPresent() || userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new NotFoundException("User " + request.getUsername() + " already exist ", HttpStatus.NOT_FOUND);
         } else if (!request.getEmail().contains("@")) {
             throw new BadCredentialsException("invalid email!");
         }
 
-        var user = new User();
+        else if(request.getPassword().length() != 13 ){
+            throw new BadRequestException("Invalid number");
+        }
 
+        var user = new User();
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPassword(encoder.encode(request.getPassword()));
@@ -82,7 +84,6 @@ public class AuthServiceImpl implements AuthService {
 
 
     }
-
 
     @Override
     public AuthLoginResponse login(AuthLoginRequest authLoginRequest) {
