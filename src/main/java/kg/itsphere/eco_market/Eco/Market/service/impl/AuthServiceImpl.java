@@ -57,13 +57,14 @@ public class AuthServiceImpl implements AuthService {
     public void register(UserRegisterRequest request) {
         if (userRepository.findByUsername(request.getUsername()).isPresent() || userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new NotFoundException("User " + request.getUsername() + " already exist ", HttpStatus.NOT_FOUND);
-        } else if (!request.getEmail().contains("@")) {
-            throw new BadCredentialsException("invalid email!");
         }
-
-        else if(request.getPassword().length() != 13 ){
-            throw new BadRequestException("Invalid number");
-        }
+//        else if (!request.getEmail().contains("@")) {
+//            throw new BadCredentialsException("invalid email!");
+//        }
+//
+//        else if(request.getPassword().length() != 13 ){
+//            throw new BadRequestException("Invalid number");
+//        }
 
         var user = new User();
         user.setUsername(request.getUsername());

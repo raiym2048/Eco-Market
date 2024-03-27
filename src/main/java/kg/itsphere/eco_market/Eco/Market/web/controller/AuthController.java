@@ -22,20 +22,20 @@ public class AuthController {
     private final PasswordValidationService passwordValidationService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody UserRegisterRequest userRegisterRequest){
-        if(passwordValidationService.validatePassword(userRegisterRequest.getPassword())) {
+    public ResponseEntity<String> register(@RequestBody UserRegisterRequest userRegisterRequest) {
+        if (passwordValidationService.validatePassword(userRegisterRequest.getPassword()))
             authService.register(userRegisterRequest);
-            return ResponseEntity.ok( "User"+ userRegisterRequest.getUsername() + " - added successfully!");
-        }
-        else{
-            throw new BadCredentialsException("Invalid password. Please provide a password with at least 6 characters, containing uppercase, lowercase, and special characters.");
-        }
+            return ResponseEntity.ok("User" + userRegisterRequest.getUsername() + " - added successfully!");
+
+//        else{
+//            throw new BadCredentialsException("Invalid password. Please provide a password with at least 6 characters, containing uppercase, lowercase, and special characters.");
+//        }
     }
+
     @PostMapping("/login")
     public AuthLoginResponse login(@RequestBody AuthLoginRequest authLoginRequest){
         return authService.login(authLoginRequest);
     }
-
-
+    
 
 }
