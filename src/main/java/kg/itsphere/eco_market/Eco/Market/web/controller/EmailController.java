@@ -1,5 +1,6 @@
 package kg.itsphere.eco_market.Eco.Market.web.controller;
 
+import kg.itsphere.eco_market.Eco.Market.web.dto.auth.MyData;
 import kg.itsphere.eco_market.Eco.Market.web.dto.user.CodeRequest;
 import kg.itsphere.eco_market.Eco.Market.web.dto.user.EmailRequest;
 import kg.itsphere.eco_market.Eco.Market.web.dto.user.RecoveryRequest;
@@ -15,15 +16,19 @@ public class EmailController {
     private EmailService emailService;
 
     @PostMapping("/verify")
-    public ResponseEntity<String> verify(@RequestParam String email, @RequestBody CodeRequest request){
+    public MyData verify(@RequestParam String email, @RequestBody CodeRequest request){
         emailService.verify(email, request);
-        return ResponseEntity.ok("Your email is linked successfully!");
+        MyData data = new MyData();
+        data.setMessage("Your email is linked successfully" );
+        return data;
     }
 
     @PostMapping("/recovery")
-    public String recovery(@RequestBody EmailRequest request){
+    public MyData recovery(@RequestBody EmailRequest request){
         emailService.recovery(request.getEmail());
-        return "We sent a link for recovery your password to your email!";
+        MyData data = new MyData();
+        data.setMessage("We sent a link for recovery your password to your email!");
+        return data;
     }
 
     @PostMapping("/recovery-password")

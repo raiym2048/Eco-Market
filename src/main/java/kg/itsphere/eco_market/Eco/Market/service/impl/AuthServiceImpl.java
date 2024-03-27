@@ -120,7 +120,7 @@ public class AuthServiceImpl implements AuthService {
                         )
                 );
             } catch (AuthenticationException e) {
-                throw new BadCredentialsException("Invalid username or password");
+                throw new BadRequestException("Invalid username or password");
             }
             var user = userRepository.findByUsername(authLoginRequest.getUsername())
                     .orElseThrow(() -> new BadCredentialsException("user not found.."));
@@ -134,7 +134,6 @@ public class AuthServiceImpl implements AuthService {
                     .accessToken(jwtToken)
 
                     .build();
-
         } else {
             throw new BadRequestException("You should verify your email");
         }
@@ -168,8 +167,6 @@ public class AuthServiceImpl implements AuthService {
 
         }
     }
-
-
 
     @Override
     public User getUserFromToken(String token) {
