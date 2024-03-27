@@ -50,6 +50,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void register(UserRegisterRequest request) {
+
+        if (userRepository.findByUsername(request.getUsername()).isPresent() || userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new NotFoundException("User " + request.getUsername() + " already exist ", HttpStatus.NOT_FOUND);
+
         if (request.getUsername().isEmpty() || request.getEmail().isEmpty()) {
             throw new BadRequestException("Your email or username can't be empty");
         }
@@ -61,7 +65,15 @@ public class AuthServiceImpl implements AuthService {
             throw new BadRequestException("Invalid email!");
         } else if (request.getPhoneNumber().length() != 13 || !request.getPhoneNumber().startsWith("+996")) {
             throw new BadRequestException("Invalid number");
+
         }
+//        else if (!request.getEmail().contains("@")) {
+//            throw new BadCredentialsException("invalid email!");
+//        }
+//
+//        else if(request.getPassword().length() != 13 ){
+//            throw new BadRequestException("Invalid number");
+//        }
 
         var user = new User();
         user.setUsername(request.getUsername());
