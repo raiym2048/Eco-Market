@@ -23,17 +23,16 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody UserRegisterRequest userRegisterRequest) {
-        if (passwordValidationService.validatePassword(userRegisterRequest.getPassword()))
-            authService.register(userRegisterRequest);
-
+//        if(passwordValidationService.validatePassword(userRegisterRequest.getPassword())) {
+//            authService.register(userRegisterRequest);
+//            return ResponseEntity.ok( "Verification code was sent to "+ userRegisterRequest.getEmail() + "!");
+//        }
+        authService.register(userRegisterRequest);
         return ResponseEntity.ok( "Verification code was sent to "+ userRegisterRequest.getEmail() + "!");
-
-
-
-
-//        else{
+//        else {
 //            throw new BadCredentialsException("Invalid password. Please provide a password with at least 6 characters, containing uppercase, lowercase, and special characters.");
 //        }
+
 
     }
 

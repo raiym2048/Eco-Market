@@ -50,50 +50,63 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void register(UserRegisterRequest request) {
+            if (userRepository.findByUsername(request.getUsername()).isPresent() || userRepository.findByEmail(request.getEmail()).isPresent()) {
+                throw new NotFoundException("User " + request.getUsername() + " already exist ", HttpStatus.NOT_FOUND);
+            }
+            if(request.getUsername().isEmpty() || request.getEmail().isEmpty()) {
+                throw new BadRequestException("Your email or username can't be empty");
+            }
+            if (userRepository.findByUsername(request.getUsername()).isPresent()) {
+                throw new NotFoundException("User with username " + request.getUsername() + " already exist ", HttpStatus.NOT_FOUND);
+            } else if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+                throw new NotFoundException("User with email " + request.getEmail() + " already exist ", HttpStatus.NOT_FOUND);
+            } else if (!request.getEmail().contains("@")) {
+                throw new BadRequestException("Invalid email!");
+            } else if (request.getPhoneNumber().length() != 13 || !request.getPhoneNumber().startsWith("+996")) {
+                throw new BadRequestException("Invalid number");
+            }
+            var user = new User();
+            user.setUsername(request.getUsername());
+            user.setEmail(request.getEmail());
+            user.setPassword(encoder.encode(request.getPassword()));
+            user.setRole(Role.ROLE_USER);
+            user.setPhoneNumber(request.getPhoneNumber());
+            var saveUser = userRepository.saveAndFlush(user);
 
-        if (userRepository.findByUsername(request.getUsername()).isPresent() || userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new NotFoundException("User " + request.getUsername() + " already exist ", HttpStatus.NOT_FOUND);
+            Basket basket = new Basket();
+            user.setVerified(false);
+            basket.setUser(saveUser);
+            var jwtToken = jwtService.generateToken(user);
 
-        if (request.getUsername().isEmpty() || request.getEmail().isEmpty()) {
-            throw new BadRequestException("Your email or username can't be empty");
-        }
-        if (userRepository.findByUsername(request.getUsername()).isPresent() ) {
-            throw new NotFoundException("User with username " + request.getUsername() + " already exist ", HttpStatus.NOT_FOUND);
-        } else if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new NotFoundException("User with email " + request.getEmail() + " already exist ", HttpStatus.NOT_FOUND);
-        } else if (!request.getEmail().contains("@")) {
-            throw new BadRequestException("Invalid email!");
-        } else if (request.getPhoneNumber().length() != 13 || !request.getPhoneNumber().startsWith("+996")) {
-            throw new BadRequestException("Invalid number");
-
-        }
-//        else if (!request.getEmail().contains("@")) {
-//            throw new BadCredentialsException("invalid email!");
-//        }
-//
-//        else if(request.getPassword().length() != 13 ){
-//            throw new BadRequestException("Invalid number");
-//        }
-
-        var user = new User();
-        user.setUsername(request.getUsername());
-        user.setEmail(request.getEmail());
-        user.setPassword(encoder.encode(request.getPassword()));
-        user.setRole(Role.ROLE_USER);
-        user.setPhoneNumber(request.getPhoneNumber());
-        var saveUser = userRepository.saveAndFlush(user);
-
-        Basket basket = new Basket();
-        user.setVerified(false);
-        basket.setUser(saveUser);
-        var jwtToken = jwtService.generateToken(user);
-
-        saveUser.setBasket(basketRepository.saveAndFlush(basket));
-        saveUserToken(saveUser, jwtToken);
-        send_code(request.getEmail());
-
+            saveUser.setBasket(basketRepository.saveAndFlush(basket));
+            saveUserToken(saveUser, jwtToken);
+            send_code(request.getEmail());
 
     }
+
+        private void revokeAllUserTokens (User user){
+            var validUserTokens = tokenRepository.findAllValidTokensByUser(user.getId());
+            if (validUserTokens.isEmpty()) {
+                return;
+            }
+            validUserTokens.forEach(t -> {
+                t.setExpired(true);
+                t.setRevoked(true);
+            });
+            tokenRepository.saveAll(validUserTokens);
+        }
+
+
+        private void saveUserToken (User user, String jwtToken){
+            var token = Token.builder()
+                    .user(user)
+                    .token(jwtToken)
+                    .tokenType(TokenType.BEARER)
+                    .revoked(false)
+                    .expired(false)
+                    .build();
+            tokenRepository.save(token);
+        }
 
     @Override
     public AuthLoginResponse login(AuthLoginRequest authLoginRequest) {
@@ -125,51 +138,8 @@ public class AuthServiceImpl implements AuthService {
         } else {
             throw new BadRequestException("You should verify your email");
         }
-
     }
-
-    private void revokeAllUserTokens(User user) {
-        var validUserTokens = tokenRepository.findAllValidTokensByUser(user.getId());
-        if (validUserTokens.isEmpty()) {
-            return;
-        }
-        validUserTokens.forEach(t -> {
-            t.setExpired(true);
-            t.setRevoked(true);
-        });
-        tokenRepository.saveAll(validUserTokens);
-    }
-
-    private void saveUserToken(User user, String jwtToken) {
-        var token = Token.builder()
-                .user(user)
-                .token(jwtToken)
-                .tokenType(TokenType.BEARER)
-                .revoked(false)
-                .expired(false)
-                .build();
-        tokenRepository.save(token);
-    }
-
-    @Override
-    public User getUserFromToken(String token) {
-
-        String[] chunks = token.substring(7).split("\\.");
-        Base64.Decoder decoder = Base64.getUrlDecoder();
-        if (chunks.length != 3)
-            throw new BadCredentialsException("Wrong token!");
-        JSONParser jsonParser = new JSONParser();
-        JSONObject object = null;
-        try {
-            byte[] decodedBytes = decoder.decode(chunks[1]);
-            object = (JSONObject) jsonParser.parse(decodedBytes);
-        } catch (ParseException e) {
-            throw new BadCredentialsException("Wrong token!!");
-        }
-        return userRepository.findByUsername(String.valueOf(object.get("sub"))).orElseThrow(() -> new BadCredentialsException("Wrong token!!!"));
-    }
-
-    private void send_code(String to) {
+    private void send_code(String to){
         try {
             String code = "";
             Random random = new Random();
@@ -197,8 +167,26 @@ public class AuthServiceImpl implements AuthService {
             throw new BadRequestException("Email is invalid , please enter correct email.");
 
         }
+    }
 
 
+
+    @Override
+    public User getUserFromToken(String token) {
+
+        String[] chunks = token.substring(7).split("\\.");
+        Base64.Decoder decoder = Base64.getUrlDecoder();
+        if (chunks.length != 3)
+            throw new BadCredentialsException("Wrong token!");
+        JSONParser jsonParser = new JSONParser();
+        JSONObject object = null;
+        try {
+            byte[] decodedBytes = decoder.decode(chunks[1]);
+            object = (JSONObject) jsonParser.parse(decodedBytes);
+        } catch (ParseException e) {
+            throw new BadCredentialsException("Wrong token!!");
+        }
+        return userRepository.findByUsername(String.valueOf(object.get("sub"))).orElseThrow(() -> new BadCredentialsException("Wrong token!!!"));
     }
 }
 
