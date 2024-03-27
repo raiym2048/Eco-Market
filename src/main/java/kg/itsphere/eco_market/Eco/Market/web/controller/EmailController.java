@@ -13,11 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/email")
 public class EmailController {
     private EmailService emailService;
-//    @PostMapping("/send")
-//    public String code(@RequestHeader("Authorization") String token, @RequestBody EmailRequest request){
-//        emailService.send_code(token, request);
-//        return "We have sent a code to your email!";
-//    }
+
     @PostMapping("/verify")
     public ResponseEntity<String> verify(@RequestParam String email, @RequestBody CodeRequest request){
         emailService.verify(email, request);
