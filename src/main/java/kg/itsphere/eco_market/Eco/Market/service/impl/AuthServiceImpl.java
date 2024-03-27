@@ -45,6 +45,7 @@ public class AuthServiceImpl implements AuthService {
     private final TokenRepository tokenRepository;
     private final PasswordEncoder encoder;
     private final BasketRepository basketRepository;
+
     @Autowired
     private JavaMailSender mailSender;
 
@@ -97,19 +98,17 @@ public class AuthServiceImpl implements AuthService {
                 t.setRevoked(true);
             });
             tokenRepository.saveAll(validUserTokens);
-        }
-
-
-        private void saveUserToken (User user, String jwtToken){
-            var token = Token.builder()
-                    .user(user)
-                    .token(jwtToken)
-                    .tokenType(TokenType.BEARER)
-                    .revoked(false)
-                    .expired(false)
-                    .build();
-            tokenRepository.save(token);
-        }
+    }
+    private void saveUserToken (User user, String jwtToken){
+        var token = Token.builder()
+                .user(user)
+                .token(jwtToken)
+                .tokenType(TokenType.BEARER)
+                .revoked(false)
+                .expired(false)
+                .build();
+        tokenRepository.save(token);
+    }
 
     @Override
     public AuthLoginResponse login(AuthLoginRequest authLoginRequest) {
