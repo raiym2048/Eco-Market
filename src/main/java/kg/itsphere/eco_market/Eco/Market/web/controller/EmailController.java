@@ -5,6 +5,7 @@ import kg.itsphere.eco_market.Eco.Market.web.dto.user.EmailRequest;
 import kg.itsphere.eco_market.Eco.Market.web.dto.user.RecoveryRequest;
 import kg.itsphere.eco_market.Eco.Market.service.EmailService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -12,14 +13,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/email")
 public class EmailController {
     private EmailService emailService;
-    @PostMapping("/send")
-    public String code(@RequestHeader("Authorization") String token, @RequestBody EmailRequest request){
-        emailService.send_code(token, request);
-        return "We have sent a code to your email!";
-    }    @PostMapping("/verify")
-    public String verify(@RequestHeader("Authorization") String token, @RequestBody CodeRequest request){
-        emailService.verify(token, request);
-        return "Your email is linked successfully!";
+//    @PostMapping("/send")
+//    public String code(@RequestHeader("Authorization") String token, @RequestBody EmailRequest request){
+//        emailService.send_code(token, request);
+//        return "We have sent a code to your email!";
+//    }
+    @PostMapping("/verify")
+    public ResponseEntity<String> verify(@RequestParam String email, @RequestBody CodeRequest request){
+        emailService.verify(email, request);
+        return ResponseEntity.ok("Your email is linked successfully!");
     }
 
     @PostMapping("/recovery")

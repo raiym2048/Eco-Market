@@ -32,7 +32,7 @@ public class User implements  UserDetails{
     private String orientation;
     private String comment;
     private String verifyCode;
-    private Boolean verified;
+    private Boolean verified = false;
     private String uuid;
     @Enumerated(EnumType.STRING)
     private Role role;
