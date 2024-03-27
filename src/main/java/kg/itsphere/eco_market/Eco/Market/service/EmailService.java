@@ -5,7 +5,7 @@ import kg.itsphere.eco_market.Eco.Market.web.dto.user.RecoveryRequest;
 
 public interface EmailService {
 
-    void verify(String token, CodeRequest request);
+    void verify( CodeRequest request);
 
     void recovery(String email);
 

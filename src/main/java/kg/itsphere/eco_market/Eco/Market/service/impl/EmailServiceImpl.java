@@ -32,14 +32,23 @@ public class EmailServiceImpl implements EmailService {
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
 
+
     @Override
-    public void verify(String email, CodeRequest request) {
-        Optional<User> user = userRepository.findByEmail(email);
-        if(Objects.equals(user.get().getVerifyCode(), request.getCode())){
-            user.get().setVerified(true);
-            userRepository.save(user.get());
-        } else
-            throw new BadRequestException("Code is wrong!");
+    public void verify( CodeRequest request) {
+        Optional<User> user = userRepository.findByVerifyCode(request.getCode());
+        if(user.isEmpty()){
+            throw new NotFoundException("Code is wrong", HttpStatus.NOT_FOUND);
+        }
+        user.get().setVerified(true);
+        user.get().setVerifyCode(null);
+        userRepository.save(user.get());
+
+
+//        if(Objects.equals(user.get().getVerifyCode(), request.getCode())){
+//            user.get().setVerified(true);
+//            userRepository.save(user.get());
+//        } else
+//            throw new BadRequestException("Code is wrong!");
 
     }
 

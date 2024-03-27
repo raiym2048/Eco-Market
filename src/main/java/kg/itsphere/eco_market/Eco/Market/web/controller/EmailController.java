@@ -16,8 +16,8 @@ public class EmailController {
     private EmailService emailService;
 
     @PostMapping("/verify")
-    public MyData verify(@RequestParam String email, @RequestBody CodeRequest request){
-        emailService.verify(email, request);
+    public MyData verify( @RequestBody CodeRequest request){
+        emailService.verify( request);
         MyData data = new MyData();
         data.setMessage("Your email is linked successfully" );
         return data;

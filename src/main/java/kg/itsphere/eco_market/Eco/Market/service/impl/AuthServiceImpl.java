@@ -3,6 +3,7 @@ package kg.itsphere.eco_market.Eco.Market.service.impl;
 import kg.itsphere.eco_market.Eco.Market.domain.exception.BadRequestException;
 import kg.itsphere.eco_market.Eco.Market.domain.exception.NotFoundException;
 
+import kg.itsphere.eco_market.Eco.Market.web.dto.user.CodeRequest;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
@@ -47,7 +48,6 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private JavaMailSender mailSender;
 
-
     @Override
     public void register(UserRegisterRequest request) {
             if (userRepository.findByUsername(request.getUsername()).isPresent())  {
@@ -87,7 +87,7 @@ public class AuthServiceImpl implements AuthService {
 
     }
 
-        private void revokeAllUserTokens (User user){
+    private void revokeAllUserTokens (User user){
             var validUserTokens = tokenRepository.findAllValidTokensByUser(user.getId());
             if (validUserTokens.isEmpty()) {
                 return;
