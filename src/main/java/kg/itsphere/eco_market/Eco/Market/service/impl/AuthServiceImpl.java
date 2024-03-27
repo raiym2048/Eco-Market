@@ -50,8 +50,11 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void register(UserRegisterRequest request) {
-            if (userRepository.findByUsername(request.getUsername()).isPresent() || userRepository.findByEmail(request.getEmail()).isPresent()) {
+            if (userRepository.findByUsername(request.getUsername()).isPresent())  {
                 throw new NotFoundException("User " + request.getUsername() + " already exist ", HttpStatus.NOT_FOUND);
+            }
+            if(userRepository.findByEmail(request.getEmail()).isPresent()){
+                throw new NotFoundException("User with email " + request.getEmail() + " already exist ", HttpStatus.NOT_FOUND);
             }
             if(request.getUsername().isEmpty() || request.getEmail().isEmpty()) {
                 throw new BadRequestException("Your email or username can't be empty");
@@ -142,7 +145,7 @@ public class AuthServiceImpl implements AuthService {
         try {
             String code = "";
             Random random = new Random();
-            for (int k = 0; k < 6; k++) {
+            for (int k = 0; k < 4; k++) {
                 if (random.nextInt(2) == 0)
                     code += (char) (random.nextInt(26) + 65);
                 else
