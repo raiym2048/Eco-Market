@@ -112,7 +112,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthLoginResponse login(AuthLoginRequest authLoginRequest) {
-        Optional<User> user1 = userRepository.findByEmail(authLoginRequest.getEmail());
+        Optional<User> user1 = userRepository.findByUsername(authLoginRequest.getUsername());
         if (user1.get().getVerified()) {
             try {
                 authenticationManager.authenticate(
@@ -134,6 +134,7 @@ public class AuthServiceImpl implements AuthService {
                     .id(user.getId())
                     .username(authLoginRequest.getUsername())
                     .accessToken(jwtToken)
+                    .email(user.getEmail())
 
                     .build();
         } else {
