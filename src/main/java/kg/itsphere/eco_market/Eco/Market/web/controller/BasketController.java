@@ -60,7 +60,7 @@ public class BasketController {
         return "Your basket is empty!";
     }
 
-    @PostMapping("/check")
+    @GetMapping("/check")
     public void check(@RequestHeader("Authorization") String token){
         basketService.check(token);
     }
