@@ -2,15 +2,14 @@ package kg.itsphere.eco_market.Eco.Market.web.controller;
 
 import kg.itsphere.eco_market.Eco.Market.domain.entity.product.Category;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.product.Product;
-import kg.itsphere.eco_market.Eco.Market.domain.entity.product.Product;
 import kg.itsphere.eco_market.Eco.Market.service.ProductService;
-import kg.itsphere.eco_market.Eco.Market.web.dto.product.ProductRequest;
 import kg.itsphere.eco_market.Eco.Market.web.dto.product.ProductResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+
+
 
 @RestController
 @AllArgsConstructor
@@ -41,4 +40,20 @@ public class ProductController {
     }
 
 
+    @GetMapping("/allProductsBYCategoryAndName")
+    public List<ProductResponse> allByCategoryAndName(@RequestParam String name,@RequestParam String category){
+        return productService.findProductsByCategoryAndName(category, name);
+    }
+
+
+    @GetMapping("/allProductsByCategory")
+    public List<ProductResponse> allByCategory(@RequestParam String category){
+        return productService.findProductsByCategory(category);
+    }
+
+
+    @GetMapping("/allProductsByName")
+    public List<ProductResponse> allByName(@RequestParam String name) {
+        return productService.findProductsByName(name);
+    }
 }

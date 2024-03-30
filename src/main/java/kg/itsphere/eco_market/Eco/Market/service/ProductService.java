@@ -19,4 +19,8 @@ public interface ProductService {
     ProductResponse findByName(String name);
     List<ProductResponse> findByCategory(Category category);
 
+    List<ProductResponse> findProductsByCategory(String category);
+    List<ProductResponse> findProductsByName(String name);
+    List<ProductResponse> findProductsByCategoryAndName(String category, String name);
+
 }
