@@ -66,15 +66,13 @@ public class AuthServiceImpl implements AuthService {
                 throw new NotFoundException("User with email " + request.getEmail() + " already exist ", HttpStatus.NOT_FOUND);
             } else if (!request.getEmail().contains("@")) {
                 throw new BadRequestException("Invalid email!");
-            } else if (request.getPhoneNumber().length() != 13 || !request.getPhoneNumber().startsWith("+996")) {
-                throw new BadRequestException("Invalid number");
             }
             var user = new User();
             user.setUsername(request.getUsername());
             user.setEmail(request.getEmail());
             user.setPassword(encoder.encode(request.getPassword()));
             user.setRole(Role.ROLE_USER);
-            user.setPhoneNumber(request.getPhoneNumber());
+
             var saveUser = userRepository.saveAndFlush(user);
 
             Basket basket = new Basket();
@@ -112,19 +110,23 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthLoginResponse login(AuthLoginRequest authLoginRequest) {
-        Optional<User> user1 = userRepository.findByUsername(authLoginRequest.getUsername());
+        Optional<User> user1 = userRepository.findByEmail(authLoginRequest.getEmail());
+        if (user1.isEmpty()){
+            throw new NotFoundException("User with this email not found" ,HttpStatus.NOT_FOUND);
+        }
+
         if (user1.get().getVerified()) {
             try {
                 authenticationManager.authenticate(
                         new UsernamePasswordAuthenticationToken(
-                                authLoginRequest.getUsername(),
+                                authLoginRequest.getEmail(),
                                 authLoginRequest.getPassword()
                         )
                 );
             } catch (AuthenticationException e) {
                 throw new BadRequestException("Invalid username or password");
             }
-            var user = userRepository.findByUsername(authLoginRequest.getUsername())
+            var user = userRepository.findByEmail(authLoginRequest.getEmail())
                     .orElseThrow(() -> new BadCredentialsException("user not found.."));
             var jwtToken = jwtService.generateToken(user);
             var refreshToken = jwtService.generateRefreshToken(user);
@@ -132,9 +134,9 @@ public class AuthServiceImpl implements AuthService {
             saveUserToken(user, jwtToken);
             return AuthLoginResponse.builder()
                     .id(user.getId())
-                    .username(authLoginRequest.getUsername())
+                    .email(authLoginRequest.getEmail())
                     .accessToken(jwtToken)
-                    .email(user.getEmail())
+                    .username(user.getUsername())
 
                     .build();
         } else {
