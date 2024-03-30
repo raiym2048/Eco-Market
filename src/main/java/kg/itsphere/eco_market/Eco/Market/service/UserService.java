@@ -11,5 +11,4 @@ public interface UserService {
     UserResponse findByEmail(String email);
     void controlUserRole(String userEmail, Map<String, Object> fields);
 
-    void register(UserRequest userRequest);
 }
