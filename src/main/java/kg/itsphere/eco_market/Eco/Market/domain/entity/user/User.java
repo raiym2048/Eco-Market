@@ -29,15 +29,17 @@ public class User implements  UserDetails{
     private String password;
     private String phoneNumber;
     private String address;
+    private String orientation;
+    private String comment;
     private String verifyCode;
-    private Boolean verified;
+    private Boolean verified = false;
     private String uuid;
     @Enumerated(EnumType.STRING)
     private Role role;
     @OneToOne
     private Basket basket;
     @OneToMany
-    private List<Order> order;
+    private List<Order> orders;
     @OneToMany(mappedBy = "user")
     private List<Token> tokens;
 

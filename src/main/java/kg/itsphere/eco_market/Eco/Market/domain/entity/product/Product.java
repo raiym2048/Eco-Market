@@ -16,6 +16,8 @@ public class Product {
     private Category category;
     private Integer price;
     @OneToOne
+    @JoinColumn
     private Image image;
     private Integer quantity;
+
 }
