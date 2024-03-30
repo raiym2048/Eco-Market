@@ -101,4 +101,20 @@ public class ProductServiceImpl implements ProductService {
             throw new NotFoundException("Product with name \"" + name + "\" not found", HttpStatus.NOT_FOUND);
         }
     }
+
+
+    @Override
+    public List<ProductResponse> findProductsByCategory(String category) {
+        return productMapper.toDtoS(productRepository.findAllByCategory(Category.valueOf(category)));
+    }
+
+    @Override
+    public List<ProductResponse> findProductsByName(String name) {
+        return productMapper.toDtoS(productRepository.findAllByName(name));
+    }
+
+    @Override
+    public List<ProductResponse> findProductsByCategoryAndName(String category, String name) {
+        return productMapper.toDtoS(productRepository.findAllByCategoryAndName(Category.valueOf(category), name));
+    }
 }
