@@ -46,15 +46,6 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user.get());
     }
 
-    @Override
-    public void register(UserRequest userRequest) {
-        if(userRepository.findByEmail(userRequest.getEmail()).isPresent()) {
-            throw new BadCredentialsException("User with email \"" + userRequest.getEmail() + "\" is already exist");
-        }
-        User user = new User();
-        userRepository.save(userMapper.toDtoUser(user, userRequest));
-    }
-
     private void checker(Optional<User> user, String email) {
         if(user.isEmpty()) {
             throw new NotFoundException("User with email \"" + email + "\" not found", HttpStatus.NOT_FOUND);
