@@ -19,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,33 +70,6 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(product.get());
     }
 
-    @Override
-    public List<ProductResponse> findProductsWithSorting(String field) {
-        return productMapper.toDtoS(productRepository.findAll(Sort.by(field)));
-    }
-
-    @Override
-    public Page<Product> findProductsWithPagination(int offset, int pageSize) {
-        return productRepository.findAll(PageRequest.of(offset, pageSize));
-    }
-
-    @Override
-    public ProductResponse findByName(String name) {
-        Optional<Product> product =productRepository.findByName(name);
-        if(product.isEmpty())
-            throw new NotFoundException("Product with name "+ name + " wasn't found !", HttpStatus.NOT_FOUND);
-        return productMapper.toDto(product.get());
-    }
-
-    @Override
-    public List<ProductResponse> findByCategory(Category category) {
-        List<Product> products =productRepository.findAllByCategory(category);
-        if(category.equals(""))
-            throw new NotFoundException("Category with the name "+ category+" wasn't found! ", HttpStatus.NOT_FOUND);
-        return productMapper.toDtoS(products);
-    }
-
-
     private void checker(Optional<Product> product, String name) {
         if(product.isEmpty()) {
             throw new NotFoundException("Product with name \"" + name + "\" not found", HttpStatus.NOT_FOUND);
@@ -110,11 +84,25 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductResponse> findProductsByName(String name) {
-        return productMapper.toDtoS(productRepository.findAllByName(name));
+        List<Product> sortedProducts = new ArrayList<>();
+        for(Product product : productRepository.findAll()) {
+            if(product.getName().startsWith(name)) {
+                sortedProducts.add(product);
+            }
+        }
+        return productMapper.toDtoS(sortedProducts);
     }
 
     @Override
     public List<ProductResponse> findProductsByCategoryAndName(String category, String name) {
-        return productMapper.toDtoS(productRepository.findAllByCategoryAndName(Category.valueOf(category), name));
+        List<Product> sortedProducts = new ArrayList<>();
+        for(Product product : productRepository.findAll()) {
+            if(product.getName().startsWith(name) && product.getCategory().equals(Category.valueOf(category))) {
+                sortedProducts.add(product);
+            }
+        }
+        return productMapper.toDtoS(sortedProducts);
     }
+
+
 }
