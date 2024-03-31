@@ -2,8 +2,6 @@ package kg.itsphere.eco_market.Eco.Market.service.impl;
 
 import kg.itsphere.eco_market.Eco.Market.domain.exception.BadRequestException;
 import kg.itsphere.eco_market.Eco.Market.domain.exception.NotFoundException;
-
-import kg.itsphere.eco_market.Eco.Market.web.dto.user.CodeRequest;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
@@ -60,11 +58,7 @@ public class AuthServiceImpl implements AuthService {
             if(request.getUsername().isEmpty() || request.getEmail().isEmpty()) {
                 throw new BadRequestException("Your email or username can't be empty");
             }
-            if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-                throw new NotFoundException("User with username " + request.getUsername() + " already exist ", HttpStatus.NOT_FOUND);
-            } else if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-                throw new NotFoundException("User with email " + request.getEmail() + " already exist ", HttpStatus.NOT_FOUND);
-            } else if (!request.getEmail().contains("@")) {
+            else if (!request.getEmail().contains("@")) {
                 throw new BadRequestException("Invalid email!");
             }
             var user = new User();
