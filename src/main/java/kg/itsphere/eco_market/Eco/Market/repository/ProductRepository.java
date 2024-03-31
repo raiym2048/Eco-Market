@@ -17,8 +17,4 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findAllByCategory(Category category);
     @Transactional
     void deleteByName(String name);
-
-    List<Product> findAllByName(String name);
-
-    List<Product> findAllByCategoryAndName(Category category, String name);
 }

@@ -15,7 +15,7 @@ public class Product {
     @Enumerated(EnumType.STRING)
     private Category category;
     private Integer price;
-    @OneToOne
+    @ManyToOne
     @JoinColumn
     private Image image;
     private Integer quantity;

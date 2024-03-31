@@ -17,43 +17,19 @@ import java.util.List;
 public class ProductController {
     private final ProductService productService;
 
-    @GetMapping("/findProductWithSorting/{field}")
-    public List<ProductResponse> findProductsWithSorting(@PathVariable String field) {
-        return productService.findProductsWithSorting(field);
-    }
-
-    @GetMapping("/findProductWithPagination/{offset}/pageSize/{pageSize}")
-    public Page<Product> findProductsWithPagination(@PathVariable int offset, @PathVariable int pageSize) {
-        return productService.findProductsWithPagination(offset, pageSize);
-    }
-    @GetMapping("/findByName/{name}")
-    public ProductResponse findProductsByName(@PathVariable String name){
-        return productService.findByName(name);
-    }
-    @GetMapping("/findByCategory/{category}")
-    public List<ProductResponse> findProductsByCategory(@PathVariable Category category){
-        return productService.findByCategory(category);
-    }
-    @GetMapping("/allProducts")
-    public List<ProductResponse> getAll(){
-        return productService.findAll();
-    }
-
-
-    @GetMapping("/allProductsBYCategoryAndName")
-    public List<ProductResponse> allByCategoryAndName(@RequestParam String name,@RequestParam String category){
-        return productService.findProductsByCategoryAndName(category, name);
-    }
-
-
-    @GetMapping("/allProductsByCategory")
-    public List<ProductResponse> allByCategory(@RequestParam String category){
-        return productService.findProductsByCategory(category);
-    }
-
-
-    @GetMapping("/allProductsByName")
-    public List<ProductResponse> allByName(@RequestParam String name) {
-        return productService.findProductsByName(name);
+    @GetMapping("/getProducts")
+    public List<ProductResponse> findProducts(
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String name
+    ) {
+        if (category != null && name != null) {
+            return productService.findProductsByCategoryAndName(category, name);
+        } else if (category != null) {
+            return productService.findProductsByCategory(category);
+        } else if (name != null) {
+            return productService.findProductsByName(name);
+        } else {
+            return productService.findAll();
+        }
     }
 }
