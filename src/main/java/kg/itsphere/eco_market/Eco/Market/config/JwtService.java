@@ -1,6 +1,7 @@
 package kg.itsphere.eco_market.Eco.Market.config;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -20,67 +21,50 @@ public class JwtService {
     private String secretKey;
     @Value("${application.security.jwt.expiration}")
     private long jwtExpiration;
-    @Value("${application.security.jwt.refresh-token.expiration}")
-    private long refreshExpiration;
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
-    }
-    public String generateToken(
-            Map<String, Object> extraClaims,
-            UserDetails userDetails
-    ) {
-        return buildToken(extraClaims, userDetails, jwtExpiration);
-    }
-    public String generateRefreshToken(
-            UserDetails userDetails
-    ) {
-        return buildToken(new HashMap<>(), userDetails, refreshExpiration);
-    }
 
-    private String buildToken(
-            Map<String, Object> extraClaims,
-            UserDetails userDetails,
-            long expiration
-    ) {
-        return Jwts
-                .builder()
-                .setClaims(extraClaims)
+    public String generateToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+
+        String role = userDetails.getAuthorities().toString();
+        claims.put("role", role);
+
+        Date issuedDate = new Date();
+        Date expireDate = new Date(issuedDate.getTime() + jwtExpiration );
+        return Jwts.builder()
+                .setClaims(claims)
                 .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .setIssuedAt(issuedDate)
+                .setExpiration(expireDate)
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
-    public String extractUsername(String token ){
-        return extractClaim(token, Claims::getSubject);
-    }
-    public Boolean isTokenValid(String token  , UserDetails userDetails){
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()))&& isTokenExpired(token);
+
+    public String getUserName(String token) {
+        return getAllClaimsFromToken(token).getSubject();
     }
 
-    private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+    public String getRole(String token) {
+        return getAllClaimsFromToken(token).get("role", String.class);
     }
 
-    private Date extractExpiration(String token) {
-        return extractClaim(token , Claims::getExpiration);
+    private Claims getAllClaimsFromToken(String token) throws ExpiredJwtException {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSignInKey())
+                .build()
+
+
+                .parseClaimsJws(token)
+                .getBody();
+    }
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+        final String username = getUserName(token);
+        Date expiration = getAllClaimsFromToken(token).getExpiration();
+        return (username.equals(userDetails.getUsername())) && expiration.after(new Date());
     }
 
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
-    }
-    public <T> T extractClaim(String token , Function<Claims , T> claimsResolver){
-        final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
-    }
-    private Claims extractAllClaims(String token ){
-        return Jwts.parserBuilder()
-                .setSigningKey(getSignInKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
     }
 
 }

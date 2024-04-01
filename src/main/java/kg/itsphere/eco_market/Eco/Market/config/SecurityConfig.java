@@ -18,7 +18,6 @@ import org.springframework.security.config.annotation.web.configurers.CsrfConfig
 public class SecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
-    private final LogoutHandler logoutHandler;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(CsrfConfigurer::disable)
@@ -36,12 +35,6 @@ public class SecurityConfig {
                 )
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .logout(logout->logout
-                        .logoutUrl("/auth/logout")
-                        .addLogoutHandler(logoutHandler)
-                        .logoutSuccessHandler(
-                                (request, response, authentication) ->
-                                        SecurityContextHolder.clearContext()))
         ;
         return http.build();
     }

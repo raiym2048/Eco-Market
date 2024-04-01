@@ -12,10 +12,7 @@ import kg.itsphere.eco_market.Eco.Market.domain.entity.userInfo.Basket;
 import kg.itsphere.eco_market.Eco.Market.web.dto.auth.AuthLoginRequest;
 import kg.itsphere.eco_market.Eco.Market.web.dto.auth.AuthLoginResponse;
 import kg.itsphere.eco_market.Eco.Market.web.dto.user.UserRegisterRequest;
-import kg.itsphere.eco_market.Eco.Market.domain.entity.Token;
-import kg.itsphere.eco_market.Eco.Market.domain.entity.enums.TokenType;
 import kg.itsphere.eco_market.Eco.Market.repository.BasketRepository;
-import kg.itsphere.eco_market.Eco.Market.repository.TokenRepository;
 import kg.itsphere.eco_market.Eco.Market.repository.UserRepository;
 import kg.itsphere.eco_market.Eco.Market.service.AuthService;
 import lombok.AllArgsConstructor;
@@ -40,7 +37,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final TokenRepository tokenRepository;
+
     private final PasswordEncoder encoder;
     private final BasketRepository basketRepository;
 
@@ -73,34 +70,13 @@ public class AuthServiceImpl implements AuthService {
             user.setVerified(false);
             basket.setUser(saveUser);
             var jwtToken = jwtService.generateToken(user);
-
             saveUser.setBasket(basketRepository.saveAndFlush(basket));
-            saveUserToken(saveUser, jwtToken);
+
             send_code(request.getEmail());
 
     }
 
-    private void revokeAllUserTokens (User user){
-            var validUserTokens = tokenRepository.findAllValidTokensByUser(user.getId());
-            if (validUserTokens.isEmpty()) {
-                return;
-            }
-            validUserTokens.forEach(t -> {
-                t.setExpired(true);
-                t.setRevoked(true);
-            });
-            tokenRepository.saveAll(validUserTokens);
-    }
-    private void saveUserToken (User user, String jwtToken){
-        var token = Token.builder()
-                .user(user)
-                .token(jwtToken)
-                .tokenType(TokenType.BEARER)
-                .revoked(false)
-                .expired(false)
-                .build();
-        tokenRepository.save(token);
-    }
+
 
     @Override
     public AuthLoginResponse login(AuthLoginRequest authLoginRequest) {
@@ -123,16 +99,9 @@ public class AuthServiceImpl implements AuthService {
             var user = userRepository.findByEmail(authLoginRequest.getEmail())
                     .orElseThrow(() -> new BadCredentialsException("user not found.."));
             var jwtToken = jwtService.generateToken(user);
-            var refreshToken = jwtService.generateRefreshToken(user);
-            revokeAllUserTokens(user);
-            saveUserToken(user, jwtToken);
-            return AuthLoginResponse.builder()
-                    .id(user.getId())
-                    .email(authLoginRequest.getEmail())
-                    .accessToken(jwtToken)
-                    .username(user.getUsername())
-
-                    .build();
+            AuthLoginResponse authLoginResponse = new AuthLoginResponse();
+            authLoginResponse.setAccessToken(jwtToken);
+            return authLoginResponse;
         } else {
             throw new BadRequestException("You should verify your email");
         }

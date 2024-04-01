@@ -7,7 +7,6 @@ import kg.itsphere.eco_market.Eco.Market.domain.entity.userInfo.Basket;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.userInfo.Order;
 import lombok.Data;
 
-import kg.itsphere.eco_market.Eco.Market.domain.entity.Token;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -40,8 +39,7 @@ public class User implements  UserDetails{
     private Basket basket;
     @OneToMany
     private List<Order> orders;
-    @OneToMany(mappedBy = "user")
-    private List<Token> tokens;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
