@@ -22,6 +22,6 @@ public class Image {
     @Column(name = "path")
     private String path;
 
-    @OneToOne(mappedBy = "image")
-    private Product product;
+    @OneToMany(mappedBy = "image")
+    private List<Product> product;
 }
