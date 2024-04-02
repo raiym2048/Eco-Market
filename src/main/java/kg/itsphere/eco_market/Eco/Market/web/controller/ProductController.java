@@ -17,7 +17,7 @@ import java.util.List;
 public class ProductController {
     private final ProductService productService;
 
-    @GetMapping("/getProducts")
+    @GetMapping("/getProducts/")
     public List<ProductResponse> findProducts(
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String name
