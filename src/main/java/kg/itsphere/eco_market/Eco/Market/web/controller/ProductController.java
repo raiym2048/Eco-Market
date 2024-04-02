@@ -7,6 +7,8 @@ import kg.itsphere.eco_market.Eco.Market.web.dto.product.ProductResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
 import java.util.List;
 
 
@@ -22,14 +24,18 @@ public class ProductController {
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String name
     ) {
-        if (category != null && name != null) {
-            return productService.findProductsByCategoryAndName(category, name);
-        } else if (category != null) {
-            return productService.findProductsByCategory(category);
-        } else if (name != null) {
-            return productService.findProductsByName(name);
+        if((category == null || category.trim().isEmpty()) && (name == null || name.trim().isEmpty())) {
+            return Collections.emptyList();
         } else {
-            return productService.findAll();
+            if (category != null && name != null) {
+                return productService.findProductsByCategoryAndName(category, name);
+            } else if (category != null) {
+                return productService.findProductsByCategory(category);
+            } else if (name != null) {
+                return productService.findProductsByName(name);
+            } else {
+                return productService.findAll();
+            }
         }
     }
 }
