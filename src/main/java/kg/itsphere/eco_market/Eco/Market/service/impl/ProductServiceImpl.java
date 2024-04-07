@@ -95,7 +95,7 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductResponse> findProductsByName(String name) {
         List<Product> sortedProducts = new ArrayList<>();
         for(Product product : productRepository.findAll()) {
-            if(product.getName().startsWith(name)) {
+            if(product.getName().contains(name)) {
                 sortedProducts.add(product);
             }
         }
