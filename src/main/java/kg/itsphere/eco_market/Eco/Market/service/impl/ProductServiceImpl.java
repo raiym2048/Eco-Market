@@ -55,7 +55,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductResponse> findAll() {
-        return productMapper.toDtoS(productRepository.findAll());
+        if(productRepository.findAll().isEmpty()) {
+            throw new NotFoundException("Found nothing", HttpStatus.NOT_FOUND);
+        } else {
+            return productMapper.toDtoS(productRepository.findAll());
+        }
     }
 
     @Override

@@ -25,16 +25,14 @@ public class ProductController {
             @RequestParam(required = false) String name
     ) {
         if((category == null || category.trim().isEmpty()) && (name == null || name.trim().isEmpty())) {
-            return Collections.emptyList();
+            return productService.findAll();
         } else {
             if (category != null && name != null) {
                 return productService.findProductsByCategoryAndName(category, name);
             } else if (category != null) {
                 return productService.findProductsByCategory(category);
-            } else if (name != null) {
-                return productService.findProductsByName(name);
             } else {
-                return productService.findAll();
+                return productService.findProductsByName(name);
             }
         }
     }
