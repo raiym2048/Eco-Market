@@ -1,5 +1,6 @@
 package kg.itsphere.eco_market.Eco.Market.service.impl;
 
+import kg.itsphere.eco_market.Eco.Market.config.JwtService;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.product.Product;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.user.User;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.userInfo.Basket;
@@ -39,9 +40,14 @@ public class BasketServiceImpl implements BasketService {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
     private final UserRepository userRepository;
+    private final JwtService jwtService;
     @Override
     public void add(BasketRequest request, String token) {
-        User user = authService.getUserFromToken(token);
+        if(token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+        String userEmail = jwtService.getUserName(token);
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new NotFoundException("User with email" + userEmail + " not found", HttpStatus.NOT_FOUND));
         Basket basket = user.getBasket();
         Optional<Product> product = productRepository.findById(request.getProductId());
         if(product.isEmpty())
@@ -69,7 +75,11 @@ public class BasketServiceImpl implements BasketService {
 
     @Override
     public BasketResponse show(String token) {
-        User user = authService.getUserFromToken(token);
+        if(token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+        String userEmail = jwtService.getUserName(token);
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new NotFoundException("User with email" + userEmail + " not found", HttpStatus.NOT_FOUND));
         Basket basket = user.getBasket();
         return basketMapper.toDto(basket);
     }
@@ -85,7 +95,11 @@ public class BasketServiceImpl implements BasketService {
 
     @Override
     public void update(BasketRequest request, String token) {
-        User user = authService.getUserFromToken(token);
+        if(token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+        String userEmail = jwtService.getUserName(token);
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new NotFoundException("User with email" + userEmail + " not found", HttpStatus.NOT_FOUND));
         Basket basket = user.getBasket();
         Optional<BasketItem> item = basketItemRepository.findByProductIdAndBasket(request.getProductId(), basket);
         if(item.isEmpty())
@@ -100,7 +114,11 @@ public class BasketServiceImpl implements BasketService {
 
     @Override
     public void check(String token) {
-        User user = authService.getUserFromToken(token);
+        if(token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+        String userEmail = jwtService.getUserName(token);
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new NotFoundException("User with email" + userEmail + " not found", HttpStatus.NOT_FOUND));
         Basket basket = user.getBasket();
         List<BasketItem> items = basket.getItems();
         int sum = 0;
@@ -114,7 +132,11 @@ public class BasketServiceImpl implements BasketService {
 
     @Override
     public OrderResponse buy(OrderRequest request, String token) {
-        User user = authService.getUserFromToken(token);
+        if(token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+        String userEmail = jwtService.getUserName(token);
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new NotFoundException("User with email" + userEmail + " not found", HttpStatus.NOT_FOUND));
         Basket basket = user.getBasket();
         if(request.getNumber() == null || request.getComment() == null
         || request.getAddress() == null || request.getOrientation() == null) {
@@ -173,7 +195,11 @@ public class BasketServiceImpl implements BasketService {
 
     @Override
     public void clear(String token) {
-        User user = authService.getUserFromToken(token);
+        if(token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+        String userEmail = jwtService.getUserName(token);
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new NotFoundException("User with email" + userEmail + " not found", HttpStatus.NOT_FOUND));
         Basket basket = user.getBasket();
         for(BasketItem item: basket.getItems()) item.setBasket(null);
         List<BasketItem> items = basket.getItems();
