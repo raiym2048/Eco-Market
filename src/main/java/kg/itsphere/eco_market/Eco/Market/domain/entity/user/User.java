@@ -45,11 +45,11 @@ public class User implements  UserDetails{
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (role == null)
             return Collections.singletonList(new SimpleGrantedAuthority("ROLE_DEFAULT"));
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.name()));
+        return Collections.singletonList(new SimpleGrantedAuthority(role.name()));
     }
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override
