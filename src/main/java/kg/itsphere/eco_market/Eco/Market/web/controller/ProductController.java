@@ -1,5 +1,6 @@
 package kg.itsphere.eco_market.Eco.Market.web.controller;
 
+import kg.itsphere.eco_market.Eco.Market.domain.entity.product.Category;
 import kg.itsphere.eco_market.Eco.Market.service.ProductService;
 import kg.itsphere.eco_market.Eco.Market.web.dto.product.ProductResponse;
 import lombok.AllArgsConstructor;
@@ -21,7 +22,7 @@ public class ProductController {
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String name
     ) {
-        if((category == null || category.trim().isEmpty()) && (name == null || name.trim().isEmpty())) {
+        if((category == null || category.trim().isEmpty() || category.equals(String.valueOf(Category.all))) && (name == null || name.trim().isEmpty())) {
             return productService.findAll();
         } else {
             if (category != null && name != null) {

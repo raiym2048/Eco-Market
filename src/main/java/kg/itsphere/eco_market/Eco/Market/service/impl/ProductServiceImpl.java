@@ -83,7 +83,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductResponse> findProductsByCategory(String category) {
-        return productMapper.toDtoS(productRepository.findAllByCategory(Category.valueOf(category)));
+        List<Product> productsSortedByCategory = productRepository.findAllByCategory(Category.valueOf(category));
+        if(productsSortedByCategory.isEmpty()) {
+            throw new NotFoundException("Found nothing", HttpStatus.NOT_FOUND);
+        } else {
+            return productMapper.toDtoS(productsSortedByCategory);
+        }
     }
 
     @Override
@@ -94,7 +99,11 @@ public class ProductServiceImpl implements ProductService {
                 sortedProducts.add(product);
             }
         }
-        return productMapper.toDtoS(sortedProducts);
+        if(sortedProducts.isEmpty()) {
+            throw new NotFoundException("Found nothing", HttpStatus.NOT_FOUND);
+        } else {
+            return productMapper.toDtoS(sortedProducts);
+        }
     }
 
     @Override
@@ -105,7 +114,11 @@ public class ProductServiceImpl implements ProductService {
                 sortedProducts.add(product);
             }
         }
-        return productMapper.toDtoS(sortedProducts);
+        if(sortedProducts.isEmpty()) {
+            throw new NotFoundException("Found nothing", HttpStatus.NOT_FOUND);
+        } else {
+            return productMapper.toDtoS(sortedProducts);
+        }
     }
 
 
