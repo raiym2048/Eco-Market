@@ -1,9 +1,11 @@
 package kg.itsphere.eco_market.Eco.Market.service.impl;
 
+import kg.itsphere.eco_market.Eco.Market.config.JwtService;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.user.User;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.userInfo.Order;
 import kg.itsphere.eco_market.Eco.Market.domain.exception.NotFoundException;
 import kg.itsphere.eco_market.Eco.Market.repository.OrderRepository;
+import kg.itsphere.eco_market.Eco.Market.repository.UserRepository;
 import kg.itsphere.eco_market.Eco.Market.service.AuthService;
 import kg.itsphere.eco_market.Eco.Market.service.OrderService;
 import kg.itsphere.eco_market.Eco.Market.web.dto.order.OrderDetailResponse;
@@ -23,11 +25,20 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
     private final AuthService authService;
     private final OrderRepository orderRepository;
+    private final JwtService jwtService;
+    private final UserRepository userRepository;
 
     @Override
     public List<OrderResponse> all(String token) {
-        User user = authService.getUserFromToken(token);
-        return orderMapper.toDtos(user.getOrders());
+        if(token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+        String userEmail = jwtService.getUserName(token);
+        Optional<User> user = userRepository.findByEmail(userEmail);
+        if(user.isEmpty()) {
+            throw new NotFoundException("User not found", HttpStatus.NOT_FOUND);
+        }
+        return orderMapper.toDtos(user.get().getOrders());
     }
 
     @Override
