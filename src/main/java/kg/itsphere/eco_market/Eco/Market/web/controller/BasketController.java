@@ -34,6 +34,7 @@ public class BasketController {
 
     @GetMapping("/show")
     public BasketResponse show(@RequestHeader("Authorization") String token){
+        System.out.println("22222222222");
         return basketService.show(token);
     }
 

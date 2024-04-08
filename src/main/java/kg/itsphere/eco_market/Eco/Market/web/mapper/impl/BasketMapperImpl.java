@@ -26,7 +26,7 @@ public class BasketMapperImpl implements BasketMapper {
         List<String> titles = new ArrayList<>();
         List<Integer> prices = new ArrayList<>();
         List<Integer> quantities = new ArrayList<>();
-        List<Long> imageIds = new ArrayList<>();
+        List<String> imagePaths = new ArrayList<>();
         int sum = 0;
         int delivery = 150;
         List<BasketItem> items = basket.getItems();
@@ -41,8 +41,8 @@ public class BasketMapperImpl implements BasketMapper {
             prices.add(product.get().getPrice());
             quantities.add(item.getQuantity());
             if(product.get().getImage() != null)
-                imageIds.add(product.get().getImage().getId());
-            else imageIds.add(null);
+                imagePaths.add(product.get().getImage().getPath());
+            else imagePaths.add(null);
             sum += product.get().getPrice() * item.getQuantity();
         }
         response.setTitles(titles);
@@ -51,7 +51,7 @@ public class BasketMapperImpl implements BasketMapper {
         response.setSum(sum);
         response.setDelivery(delivery);
         response.setTotal(sum + delivery);
-        response.setImageIds(imageIds);
+        response.setImagePaths(imagePaths);
 
         return response;
     }
