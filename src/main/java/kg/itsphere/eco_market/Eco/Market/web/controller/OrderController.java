@@ -16,7 +16,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping("/all")
-    public List<OrderResponse> all(@RequestHeader("Authorization")String token){
+    public List<OrderResponse> all(@RequestHeader("Authorization") String token){
         return orderService.all(token);
     }
 
