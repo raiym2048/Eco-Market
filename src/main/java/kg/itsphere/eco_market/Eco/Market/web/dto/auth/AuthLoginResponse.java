@@ -6,8 +6,8 @@ import lombok.*;
 @Getter
 @Setter
 public class AuthLoginResponse {
-
+    private String email;
+    private String password;
     @JsonProperty("access_token")
     private String accessToken;
-
 }

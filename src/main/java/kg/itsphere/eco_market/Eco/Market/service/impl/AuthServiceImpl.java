@@ -100,6 +100,8 @@ public class AuthServiceImpl implements AuthService {
                     .orElseThrow(() -> new BadCredentialsException("user not found.."));
             var jwtToken = jwtService.generateToken(user);
             AuthLoginResponse authLoginResponse = new AuthLoginResponse();
+            authLoginResponse.setEmail(authLoginRequest.getEmail());
+            authLoginResponse.setPassword(authLoginRequest.getPassword());
             authLoginResponse.setAccessToken(jwtToken);
             return authLoginResponse;
         } else {
