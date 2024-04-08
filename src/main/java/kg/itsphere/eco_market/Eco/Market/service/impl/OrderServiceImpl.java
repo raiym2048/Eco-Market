@@ -43,7 +43,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDetailResponse detail(String token, Long id) {
-        User user = authService.getUserFromToken(token);
+        if(token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+//        User user = authService.getUserFromToken(token);
+        String userEmail = jwtService.getUserName(token);
+        Optional<User> user = userRepository.findByEmail(userEmail);
         Optional<Order> order = orderRepository.findById(id);
         if(order.isEmpty())
             throw new NotFoundException("Order with id: " + id + " - not found!", HttpStatus.NOT_FOUND);
