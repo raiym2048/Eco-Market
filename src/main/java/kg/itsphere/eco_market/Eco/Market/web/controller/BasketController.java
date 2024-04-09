@@ -67,16 +67,15 @@ public class BasketController {
         return data;
     }
 
-    @PutMapping("/updateProduct/{id}/")
-    public ResponseEntity<?> updateQuantityOfProduct(@RequestHeader("Authorization") String token, @PathVariable Long id,
-                                                     @RequestParam(required = false) String minus,
-                                                     @RequestParam(required = false) String plus
-    ) {
-        if(minus != null && plus == null) {
-            basketService.decreaseOne(token, id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else if (minus == null && plus != null) {
+    @PutMapping("/updateProduct/{id}")
+    public ResponseEntity<?> updateProductQuantity(@RequestHeader("Authorization") String token,
+                                      @PathVariable Long id,
+                                      @RequestParam String action) {
+        if ("plus".equals(action)) {
             basketService.addOne(token, id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else if ("minus".equals(action)) {
+            basketService.decreaseOne(token, id);
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
