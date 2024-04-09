@@ -19,6 +19,7 @@ import kg.itsphere.eco_market.Eco.Market.web.dto.order.OrderResponse;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -66,12 +67,20 @@ public class BasketController {
         return data;
     }
 
-    @PutMapping("/update")
-    public MyData update(@RequestBody BasketRequest request, @RequestHeader("Authorization") String token){
-        basketService.update(request, token);
-        MyData data = new MyData();
-        data.setMessage("Quantity updated successfully!");
-        return data;
+    @PutMapping("/updateProduct/{id}/")
+    public ResponseEntity<?> updateQuantityOfProduct(@RequestHeader("Authorization") String token, @PathVariable Long id,
+                                                     @RequestParam(required = false) String minus,
+                                                     @RequestParam(required = false) String plus
+    ) {
+        if(minus != null && plus == null) {
+            basketService.decreaseOne(token, id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else if (minus == null && plus != null) {
+            basketService.addOne(token, id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
     }
 
     @DeleteMapping("/clear")

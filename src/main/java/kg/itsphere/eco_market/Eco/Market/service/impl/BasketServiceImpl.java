@@ -94,21 +94,45 @@ public class BasketServiceImpl implements BasketService {
     }
 
     @Override
-    public void update(BasketRequest request, String token) {
+    public void addOne(String token, Long id) {
         if(token.startsWith("Bearer ")) {
             token = token.substring(7);
         }
         String userEmail = jwtService.getUserName(token);
         User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new NotFoundException("User with email" + userEmail + " not found", HttpStatus.NOT_FOUND));
         Basket basket = user.getBasket();
-        Optional<BasketItem> item = basketItemRepository.findByProductIdAndBasket(request.getProductId(), basket);
-        if(item.isEmpty())
-            throw new BadRequestException("Product with id: " + request.getProductId() + " - doesn't exist!");
-        Optional<Product> product = productRepository.findById(request.getProductId());
-        int allSum = product.get().getQuantity() + item.get().getQuantity();
-        if(request.getQuantity() > allSum)
-            throw new BadRequestException("There is only " + allSum + " products!");
-        item.get().setQuantity(request.getQuantity());
+        Optional<BasketItem> item = basketItemRepository.findByProductIdAndBasket(id, basket);
+        if(item.isEmpty()) {
+            throw new BadRequestException("Product with id: " + id + " - doesn't exist!");
+        }
+        Optional<Product> product = productRepository.findById(id);
+        int newSum = item.get().getQuantity() + 1;
+        if(product.get().getQuantity() < newSum) {
+            throw new BadRequestException("There is only " + product.get().getQuantity() + " products!");
+        }
+        item.get().setQuantity(newSum);
+        basketItemRepository.save(item.get());
+    }
+
+    @Override
+    public void decreaseOne(String token, Long id) {
+        if(token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+        String userEmail = jwtService.getUserName(token);
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new NotFoundException("User with email" + userEmail + " not found", HttpStatus.NOT_FOUND));
+        Basket basket = user.getBasket();
+        Optional<BasketItem> item = basketItemRepository.findByProductIdAndBasket(id, basket);
+        if(item.isEmpty()) {
+            throw new BadRequestException("Product with id: " + id + " - doesn't exist!");
+        }
+        Optional<Product> product = productRepository.findById(id);
+        int newSum = item.get().getQuantity() - 1;
+        if(newSum < 1) {
+            basketItemRepository.deleteById(id);
+            return;
+        }
+        item.get().setQuantity(newSum);
         basketItemRepository.save(item.get());
     }
 

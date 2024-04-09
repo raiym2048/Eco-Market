@@ -13,8 +13,8 @@ public interface BasketService {
     BasketResponse show(String token);
 
     void delete(BasketItem item, Basket basket);
-
-    void update(BasketRequest request, String token);
+    void addOne(String token, Long id);
+    void decreaseOne(String token, Long id);
 
     void check(String token);
 
