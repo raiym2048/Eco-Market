@@ -126,10 +126,9 @@ public class BasketServiceImpl implements BasketService {
         if(item.isEmpty()) {
             throw new BadRequestException("Product with id: " + id + " - doesn't exist!");
         }
-        Optional<Product> product = productRepository.findById(id);
         int newSum = item.get().getQuantity() - 1;
         if(newSum < 1) {
-            basketItemRepository.deleteById(id);
+            delete(item.get(), basket);
             return;
         }
         item.get().setQuantity(newSum);

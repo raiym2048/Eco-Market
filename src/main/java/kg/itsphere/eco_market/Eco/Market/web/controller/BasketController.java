@@ -73,10 +73,10 @@ public class BasketController {
                                       @RequestParam String action) {
         if ("plus".equals(action)) {
             basketService.addOne(token, id);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>("Product is successfully increased to one", HttpStatus.OK);
         } else if ("minus".equals(action)) {
             basketService.decreaseOne(token, id);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>("Product is successfully decreased to one", HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
