@@ -13,4 +13,5 @@ public interface OrderService {
 
     List<OrderResponse> getAllOrders();
     OrderDetailResponseForAdmin getPersonOrder(Long id);
+
 }
