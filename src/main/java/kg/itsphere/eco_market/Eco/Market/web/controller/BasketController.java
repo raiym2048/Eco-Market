@@ -4,6 +4,7 @@ import kg.itsphere.eco_market.Eco.Market.config.JwtService;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.user.User;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.userInfo.Basket;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.userInfo.BasketItem;
+import kg.itsphere.eco_market.Eco.Market.domain.exception.ApiResponse;
 import kg.itsphere.eco_market.Eco.Market.domain.exception.BadRequestException;
 import kg.itsphere.eco_market.Eco.Market.domain.exception.NotFoundException;
 import kg.itsphere.eco_market.Eco.Market.repository.BasketItemRepository;
@@ -73,10 +74,10 @@ public class BasketController {
                                       @RequestParam String action) {
         if ("plus".equals(action)) {
             basketService.addOne(token, id);
-            return new ResponseEntity<>("Product is successfully increased to one", HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse("Product is successfully increase to one"), HttpStatus.OK);
         } else if ("minus".equals(action)) {
             basketService.decreaseOne(token, id);
-            return new ResponseEntity<>("Product is successfully decreased to one", HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse("Product is successfully decreased to one"), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
