@@ -8,5 +8,6 @@ public class BasketProductResponse {
     private String title;
     private Integer price;
     private Integer quantity;
+    private Integer subTotal;
     private String imagePath;
 }
