@@ -13,6 +13,7 @@ import kg.itsphere.eco_market.Eco.Market.repository.UserRepository;
 import kg.itsphere.eco_market.Eco.Market.service.AuthService;
 import kg.itsphere.eco_market.Eco.Market.service.BasketService;
 import kg.itsphere.eco_market.Eco.Market.web.dto.auth.MyData;
+import kg.itsphere.eco_market.Eco.Market.web.dto.basket.BasketProductResponse;
 import kg.itsphere.eco_market.Eco.Market.web.dto.basket.BasketRequest;
 import kg.itsphere.eco_market.Eco.Market.web.dto.basket.BasketResponse;
 import kg.itsphere.eco_market.Eco.Market.web.dto.order.OrderRequest;
@@ -36,9 +37,9 @@ public class BasketController {
     private final UserRepository userRepository;
     private final JwtService jwtService;
 
-    @PostMapping("/add")
-    public MyData add(@RequestBody BasketRequest request, @RequestHeader("Authorization") String token){
-        basketService.add(request, token);
+    @PostMapping("/add/{id}")
+    public MyData add(@PathVariable Long id, @RequestHeader("Authorization") String token){
+        basketService.add(id, token);
         MyData data = new MyData();
         data.setMessage("Product added to Basket successfully");
         return data;
@@ -47,6 +48,11 @@ public class BasketController {
     @GetMapping("/show")
     public BasketResponse show(@RequestHeader("Authorization") String token){
         return basketService.show(token);
+    }
+
+    @GetMapping("/show/{id}")
+    public BasketProductResponse show(@PathVariable Long id, @RequestHeader("Authorization") String token){
+        return basketService.showDetail(id, token);
     }
 
     @DeleteMapping("/delete")
