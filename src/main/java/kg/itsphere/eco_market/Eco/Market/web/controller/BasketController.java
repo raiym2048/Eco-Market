@@ -4,6 +4,7 @@ import kg.itsphere.eco_market.Eco.Market.config.JwtService;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.user.User;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.userInfo.Basket;
 import kg.itsphere.eco_market.Eco.Market.domain.entity.userInfo.BasketItem;
+import kg.itsphere.eco_market.Eco.Market.domain.exception.ApiResponse;
 import kg.itsphere.eco_market.Eco.Market.domain.exception.BadRequestException;
 import kg.itsphere.eco_market.Eco.Market.domain.exception.NotFoundException;
 import kg.itsphere.eco_market.Eco.Market.repository.BasketItemRepository;
@@ -12,6 +13,7 @@ import kg.itsphere.eco_market.Eco.Market.repository.UserRepository;
 import kg.itsphere.eco_market.Eco.Market.service.AuthService;
 import kg.itsphere.eco_market.Eco.Market.service.BasketService;
 import kg.itsphere.eco_market.Eco.Market.web.dto.auth.MyData;
+import kg.itsphere.eco_market.Eco.Market.web.dto.basket.BasketProductResponse;
 import kg.itsphere.eco_market.Eco.Market.web.dto.basket.BasketRequest;
 import kg.itsphere.eco_market.Eco.Market.web.dto.basket.BasketResponse;
 import kg.itsphere.eco_market.Eco.Market.web.dto.order.OrderRequest;
@@ -35,9 +37,9 @@ public class BasketController {
     private final UserRepository userRepository;
     private final JwtService jwtService;
 
-    @PostMapping("/add")
-    public MyData add(@RequestBody BasketRequest request, @RequestHeader("Authorization") String token){
-        basketService.add(request, token);
+    @PostMapping("/add/{id}")
+    public MyData add(@PathVariable Long id, @RequestHeader("Authorization") String token){
+        basketService.add(id, token);
         MyData data = new MyData();
         data.setMessage("Product added to Basket successfully");
         return data;
@@ -46,6 +48,11 @@ public class BasketController {
     @GetMapping("/show")
     public BasketResponse show(@RequestHeader("Authorization") String token){
         return basketService.show(token);
+    }
+
+    @GetMapping("/show/{id}")
+    public BasketProductResponse show(@PathVariable Long id, @RequestHeader("Authorization") String token){
+        return basketService.showDetail(id, token);
     }
 
     @DeleteMapping("/delete")
@@ -73,10 +80,10 @@ public class BasketController {
                                       @RequestParam String action) {
         if ("plus".equals(action)) {
             basketService.addOne(token, id);
-            return new ResponseEntity<>("Product is successfully increased to one", HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse("Product is successfully increase to one"), HttpStatus.OK);
         } else if ("minus".equals(action)) {
             basketService.decreaseOne(token, id);
-            return new ResponseEntity<>("Product is successfully decreased to one", HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse("Product is successfully decreased to one"), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }

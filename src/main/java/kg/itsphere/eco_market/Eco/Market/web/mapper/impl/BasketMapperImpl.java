@@ -22,29 +22,47 @@ public class BasketMapperImpl implements BasketMapper {
     private final BasketService basketService;
 
     @Override
-    public BasketResponse toDto(Basket basket) {
+    public BasketProductResponse toDto(Product product, int quantity) {
+        BasketProductResponse response = new BasketProductResponse();
+        if(product.getImage() != null) {
+            response.setImagePath(product.getImage().getPath());
+        } else {
+            response.setImagePath(null);
+        }
+        response.setProductID(product.getId());
+        response.setTitle(product.getName());
+        response.setPrice(product.getPrice());
+        response.setQuantity(quantity);
+        response.setSubTotal(quantity * product.getPrice());
+
+        return response;
+    }
+
+    @Override
+    public BasketResponse toDtoS(Basket basket) {
         BasketResponse response = new BasketResponse();
         List<BasketProductResponse> basketProductResponses = new ArrayList<>();
         int sum = 0;
         int delivery = 150;
         List<BasketItem> items = basket.getItems();
-        for(int i = 0; i < items.size(); i++){
-            BasketProductResponse productResponse = new BasketProductResponse();
-            BasketItem item = items.get(i);
+        for (BasketItem item : items) {
             Optional<Product> product = productRepository.findById(item.getProductId());
-            if(product.isEmpty()){
+            if (product.isEmpty()) {
                 basketService.delete(item, basket);
                 continue;
             }
-            if(product.get().getImage() != null) {
-                productResponse.setImagePath(product.get().getImage().getPath());
-            } else {
-                productResponse.setImagePath(null);
-            }
-            productResponse.setProductID(product.get().getId());
-            productResponse.setTitle(product.get().getName());
-            productResponse.setPrice(product.get().getPrice());
-            productResponse.setQuantity(item.getQuantity());
+            BasketProductResponse productResponse = toDto(product.get(), item.getQuantity());
+
+//            if(product.get().getImage() != null) {
+//                productResponse.setImagePath(product.get().getImage().getPath());
+//            } else {
+//                productResponse.setImagePath(null);
+//            }
+//            productResponse.setProductID(product.get().getId());
+//            productResponse.setTitle(product.get().getName());
+//            productResponse.setPrice(product.get().getPrice());
+//            productResponse.setQuantity(item.getQuantity());
+//            productResponse.setSubTotal(item.getQuantity() * product.get().getPrice());
             sum += product.get().getPrice() * item.getQuantity();
             basketProductResponses.add(productResponse);
         }

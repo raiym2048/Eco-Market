@@ -12,6 +12,7 @@ import kg.itsphere.eco_market.Eco.Market.domain.exception.NotFoundException;
 import kg.itsphere.eco_market.Eco.Market.repository.*;
 import kg.itsphere.eco_market.Eco.Market.service.AuthService;
 import kg.itsphere.eco_market.Eco.Market.service.BasketService;
+import kg.itsphere.eco_market.Eco.Market.web.dto.basket.BasketProductResponse;
 import kg.itsphere.eco_market.Eco.Market.web.dto.basket.BasketRequest;
 import kg.itsphere.eco_market.Eco.Market.web.dto.basket.BasketResponse;
 import kg.itsphere.eco_market.Eco.Market.web.dto.order.OrderRequest;
@@ -42,26 +43,26 @@ public class BasketServiceImpl implements BasketService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
     @Override
-    public void add(BasketRequest request, String token) {
+    public void add(Long id, String token) {
         if(token.startsWith("Bearer ")) {
             token = token.substring(7);
         }
         String userEmail = jwtService.getUserName(token);
         User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new NotFoundException("User with email" + userEmail + " not found", HttpStatus.NOT_FOUND));
         Basket basket = user.getBasket();
-        Optional<Product> product = productRepository.findById(request.getProductId());
+        Optional<Product> product = productRepository.findById(id);
         if(product.isEmpty())
-            throw new NotFoundException("Product with id: " + request.getProductId() + " - doesn't exist!", HttpStatus.NOT_FOUND);
-        Optional<BasketItem> isItem = basketItemRepository.findByProductIdAndBasket(request.getProductId(), user.getBasket());
+            throw new NotFoundException("Product with id: " + id + " - doesn't exist!", HttpStatus.NOT_FOUND);
+        Optional<BasketItem> isItem = basketItemRepository.findByProductIdAndBasket(id, user.getBasket());
         if(isItem.isPresent()) {
             throw new BadRequestException("You already added this product to your cart!");
         }
-        if(request.getQuantity() > product.get().getQuantity())
-            throw new BadRequestException("There is only " + product.get().getQuantity() + " products!");
+        if(1 > product.get().getQuantity())
+            throw new BadRequestException("Products with id: " + id + " is empty! ");
 
         BasketItem item = new BasketItem();
-        item.setProductId(request.getProductId());
-        item.setQuantity(request.getQuantity());
+        item.setProductId(id);
+        item.setQuantity(1);
         item.setBasket(basket);
 
         BasketItem basketItem = basketItemRepository.saveAndFlush(item);
@@ -81,7 +82,26 @@ public class BasketServiceImpl implements BasketService {
         String userEmail = jwtService.getUserName(token);
         User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new NotFoundException("User with email" + userEmail + " not found", HttpStatus.NOT_FOUND));
         Basket basket = user.getBasket();
-        return basketMapper.toDto(basket);
+        return basketMapper.toDtoS(basket);
+    }
+
+    @Override
+    public BasketProductResponse showDetail(Long id, String token) {
+        if(token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+        String userEmail = jwtService.getUserName(token);
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new NotFoundException("User with email" + userEmail + " not found", HttpStatus.NOT_FOUND));
+        Basket basket = user.getBasket();
+        Optional<Product> product = productRepository.findById(id);
+        if(product.isEmpty()){
+            throw new BadRequestException("Product with id: " + id + " - doesn't exist!");
+        }
+        Optional<BasketItem> item = basketItemRepository.findByProductIdAndBasket(id, basket);
+        if(item.isEmpty()) {
+            throw new BadRequestException("Product with id: " + id + " - doesn't exist in your basket!");
+        }
+        return basketMapper.toDto(product.get(), item.get().getQuantity());
     }
 
     @Override
@@ -103,7 +123,7 @@ public class BasketServiceImpl implements BasketService {
         Basket basket = user.getBasket();
         Optional<BasketItem> item = basketItemRepository.findByProductIdAndBasket(id, basket);
         if(item.isEmpty()) {
-            throw new BadRequestException("Product with id: " + id + " - doesn't exist!");
+            throw new BadRequestException("Product with id: " + id + " - doesn't exist in your basket!");
         }
         Optional<Product> product = productRepository.findById(id);
         int newSum = item.get().getQuantity() + 1;
@@ -124,7 +144,7 @@ public class BasketServiceImpl implements BasketService {
         Basket basket = user.getBasket();
         Optional<BasketItem> item = basketItemRepository.findByProductIdAndBasket(id, basket);
         if(item.isEmpty()) {
-            throw new BadRequestException("Product with id: " + id + " - doesn't exist!");
+            throw new BadRequestException("Product with id: " + id + " - doesn't exist in you basket!");
         }
         int newSum = item.get().getQuantity() - 1;
         if(newSum < 1) {
