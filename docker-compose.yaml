@@ -1,28 +1,16 @@
 version: '3'
 
-
 services:
-  app:
-    build:
-      context: .
-    container_name: Eco-Market
-    depends_on:
-      - db
+  postgres:
+    image: 'postgres:16.1'
+    container_name: 'Eco-Market-Postgres'
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/Eco-Market
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=1234
+      - 'POSTGRES_USER=postgres'
+      - 'POSTGRES_PASSWORD=Azimbaev2004'
+      - 'POSTGRES_DB=Eco-Market'
+
+  app:
+    build: ./
+    container_name: 'Eco-Market-Application'
     ports:
       - '8080:8080'
-
-  db:
-    image: postgres:15.1-alpine
-    container_name: postgres
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=1234
-      - POSTGRES_DB=Eco-Market
-    ports:
-      - "5433:5433"
-    volumes:
-      - ./src/main/resources/db/migration:/docker-entrypoint-initdb.d

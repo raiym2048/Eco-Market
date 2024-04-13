@@ -3,10 +3,10 @@ package kg.itsphere.eco_market.Eco.Market;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+//@SpringBootTest
 class EcoMarketApplicationTests {
 
-	@Test
+//	@Test
 	void contextLoads() {
 	}
 

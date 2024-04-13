@@ -1,6 +1,4 @@
-FROM openjdk:17-jdk-slim
-WORKDIR /
-COPY /src /src
-COPY --from=build /target/*.jar application.jar
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "application.jar"]
+FROM openjdk:21
+ARG JAR_FILE=target/*.jar
+COPY ./target/demo-0.0.1-SNAPSHOT.jar app.jar
+ENTRYPOINT ["java", "-jar", "/app.jar"]
